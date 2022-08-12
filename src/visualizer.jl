@@ -87,7 +87,7 @@ end
 Plots objective function values for solutions in `S`.
 """
 function convergence(S::Vector{Solution})
-    X = [f(s) for s ∈ S]
-    Y = 0:(length(S)-1)
+    Y = [f(s) for s ∈ S]
+    X = 0:(length(S)-1)
     plot(X,Y)
 end
