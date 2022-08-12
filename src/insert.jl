@@ -67,7 +67,7 @@ end
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedy_insert!(s::Solution)
+function greedy_insert!(rng::AbstractRNG, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -114,11 +114,10 @@ function greedy_insert!(s::Solution)
     end
     return s
 end
-greedy_insert!(rng::AbstractRNG, s::Solution) = greedy_insert!(s)
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretₖinsert!(K, s::Solution)
+function regretₖinsert!(rng::AbstractRNG, K, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -181,5 +180,5 @@ function regretₖinsert!(K, s::Solution)
     # Step 3: Return initial solution
     return s
 end
-regret₂insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(2, s)
-regret₃insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(3, s)
+regret₂insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, 2, s)
+regret₃insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, 3, s)
