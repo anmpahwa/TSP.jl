@@ -54,7 +54,7 @@ function ALNS(rng::AbstractRNG, χ::ALNSParameters, s::Solution)
             cᵢ[i] += 1
             # Step 2.2.2: Using the removal and insertion operators create new solution.
             η  = rand(rng)
-            q  = Int(floor(((1 - η) * min(C̲, μ̲ * length(s.N)) + η * min(C̅, μ̅ * length(s.N)))))
+            q  = Int64(floor(((1 - η) * min(C̲, μ̲ * length(s.N)) + η * min(C̅, μ̅ * length(s.N)))))
             s′ = deepcopy(s)
             remove!(rng, q, s′, R)
             insert!(rng, s′, I)

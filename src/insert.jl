@@ -117,7 +117,7 @@ end
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretₖinsert!(rng::AbstractRNG, K, s::Solution)
+function regretₖinsert!(rng::AbstractRNG, K::Int64, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -180,5 +180,5 @@ function regretₖinsert!(rng::AbstractRNG, K, s::Solution)
     # Step 3: Return initial solution
     return s
 end
-regret₂insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, 2, s)
-regret₃insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, 3, s)
+regret₂insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, Int64(2), s)
+regret₃insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, Int64(3), s)

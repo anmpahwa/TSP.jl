@@ -161,7 +161,7 @@ end
 
 # Regret-K Insertion
 # Create initial solution by iteratively adding nodes with highest regret cost as its best position until all nodes have been added to the solution
-function regretₖinit(rng::AbstractRNG, K, G)
+function regretₖinit(rng::AbstractRNG, K::Int64, G)
     N, A = G
     s = Solution(N, A)
     d = N[1]
@@ -224,5 +224,5 @@ function regretₖinit(rng::AbstractRNG, K, G)
     # Step 3: Return initial solution
     return s
 end
-regret₂init(rng::AbstractRNG, G) = regretₖinit(rng, 2, G)
-regret₃init(rng::AbstractRNG, G) = regretₖinit(rng, 3, G)
+regret₂init(rng::AbstractRNG, G) = regretₖinit(rng, Int64(2), G)
+regret₃init(rng::AbstractRNG, G) = regretₖinit(rng, Int64(3), G)

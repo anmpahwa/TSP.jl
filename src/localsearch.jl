@@ -1,5 +1,5 @@
 """
-    localsearch!(rng::AbstractRNG, k̅, s::Solution, method::Symbol)
+    localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)
 
 Return solution `s` performing local seach on the solution using 
 given `method` for `k̅` iterations until improvement.
@@ -12,13 +12,13 @@ Available methods include,
 Optionally specify a random number generator `rng` as the first argument 
 (defaults to `Random.GLOBAL_RNG`).
 """
-localsearch!(rng::AbstractRNG, k̅, s::Solution, method::Symbol)::Solution = getfield(TSP, method)(rng, k̅, s)
-localsearch!(k̅, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
+localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)::Solution = getfield(TSP, method)(rng, k̅, s)
+localsearch!(k̅::Int64, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
 
 # Move
 # Iteratively move a randomly seceted node in its best position if the move 
 # results in reduction in objective function value for k̅ iterations until improvement
-function move!(rng::AbstractRNG, k̅, s::Solution)
+function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
     N = s.N
     # Step 1: Initialize
@@ -75,7 +75,7 @@ end
 # Iteratively takes 2 arcs and reconfigure them if the reconfigure 
 # results in reduction in objective function value (total possible 
 # reconfigurations 2²-1 = 3) for k̅ iterations until improvement
-function opt!(rng::AbstractRNG, k̅, s::Solution)
+function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
     N = s.N
     # Step 1: Iterate for k̅ iterations until improvement
@@ -124,7 +124,7 @@ end
 # Swap nodes
 # Iteratively swap two randomly selected nodes if the swap results in 
 # reduction in objective function value for k̅ iterations until improvement
-function swap!(rng::AbstractRNG, k̅, s::Solution)
+function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
     N = s.N
     z = f(s)
     # Step 1: Iterate for k̅ iterations until improvement
