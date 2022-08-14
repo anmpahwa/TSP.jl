@@ -22,7 +22,7 @@ function cw_init(rng::AbstractRNG, G)
     d = N[1]
     # Step 1: Initialize solution with routes to every node from the depot node (first node)
     K = length(N)
-    for k ∈ K:-1:1 insertnode!(N[k], d, d, s) end
+    for k ∈ K:-1:1 insertnode!(N[k], d, d, s, ignore=true) end
     # Step 2: Merge routes iteratively until single route traversing all nodes remains
     x = fill(-Inf, (K,K))       # x[i,j]: Savings from merging route with tail node N[i] into route with tail node N[j]
     ϕ = ones(Int64, K)          # ϕ[k]  : if isone(ϕ[k]) implies route k is active else inactive
@@ -42,8 +42,8 @@ function cw_init(rng::AbstractRNG, G)
                 nₒ = n₁
                 p  = N[nₒ.t]
                 while true
-                    removenode!(nₒ, p, d, s)
-                    insertnode!(nₒ, n₂,q, s)
+                    removenode!(nₒ, p, d, s, ignore=true)
+                    insertnode!(nₒ, n₂,q, s, ignore=true)
                     if isequal(p, d) break end
                     q  = nₒ
                     nₒ = p
@@ -58,8 +58,8 @@ function cw_init(rng::AbstractRNG, G)
                 nₒ = N[n₂.h]
                 q  = N[nₒ.h]
                 while true
-                    removenode!(nₒ, n₂,q, s)
-                    insertnode!(nₒ, p, d, s)
+                    removenode!(nₒ, n₂,q, s, ignore=true)
+                    insertnode!(nₒ, p, d, s, ignore=true)
                     if isequal(q, d) break end
                     p  = nₒ
                     nₒ = q
@@ -75,8 +75,8 @@ function cw_init(rng::AbstractRNG, G)
         nₒ = n₁
         p  = N[nₒ.t]
         while true
-            removenode!(nₒ, p, d, s)
-            insertnode!(nₒ, n₂,q, s)
+            removenode!(nₒ, p, d, s, ignore=true)
+            insertnode!(nₒ, n₂,q, s, ignore=true)
             if isequal(p, d) break end
             q  = nₒ
             nₒ = p
