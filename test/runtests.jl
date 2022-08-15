@@ -9,9 +9,9 @@ using Random
     methods = [:cw_init, :nn_init, :random_init, :regret₂init, :regret₃init]
     χ   = ALNSParameters(
         k̲   =   2                       ,
+        l̲   =   80                      ,
+        l̅   =   100                     ,
         k̅   =   500                     ,
-        k̲ₛ  =   80                      ,
-        k̅ₛ  =   250                     ,   
         Ψᵣ  =   [
                     :random_remove! , 
                     :worst_remove!  , 
@@ -23,7 +23,7 @@ using Random
                     :regret₂insert! ,
                     :regret₃insert!
                 ]                       ,
-        Ψₛ  =   [
+        Ψₗ  =   [
                     :move!          ,
                     :opt!           ,
                     :swap!
