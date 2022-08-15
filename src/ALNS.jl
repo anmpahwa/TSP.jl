@@ -112,4 +112,4 @@ function ALNS(rng::AbstractRNG, χ::ALNSParameters, s::Solution)
     # Step 3: Return vector of solutions
     return S
 end
-ALNS(s::Solution, χ::ALNSParameters) = ALNS(Random.GLOBAL_RNG, s, χ)
+ALNS(χ::ALNSParameters, s::Solution) = ALNS(Random.GLOBAL_RNG, χ, s)
