@@ -40,6 +40,7 @@ mutable struct Solution
     c::Float64                                                  # TSP route cost
     Solution(N, A) = new(N, A, 0.)
 end
+Base.hash(s::Solution) = hash(vectorize(s))
 """
     f(s::Solution)
 
