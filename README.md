@@ -37,8 +37,8 @@ and an initial solution developed using one of the following methods,
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
 - Random Removal    : `random_remove!`
-- Worst Removal     : `worst_remove!`
 - Shaw Removal      : `shaw_remove!`
+- Worst Removal     : `worst_remove!`
 
 and consequently inserts removed nodes using,
 - Best Insertion    : `best_insert!`

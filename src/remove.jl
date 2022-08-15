@@ -7,8 +7,8 @@ Return solution removing `q` nodes from solution `s` using the given `method`.
 
 Available methods include,
 - Random Removal    : `random_remove!`
-- Worst Removal     : `worst_remove!`
 - Shaw Removal      : `shaw_remove!`
+- Worst Removal     : `worst_remove!`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
