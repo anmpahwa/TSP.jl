@@ -16,7 +16,7 @@ function insertnode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     nₒ.t = nₜ.i
     nₒ.h = nₕ.i
     s.c += aₜ.c + aₕ.c - aₒ.c
-    return
+    return s
 end
 
 """
@@ -38,5 +38,5 @@ function removenode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     nₒ.t = nₒ.i
     nₒ.h = nₒ.i
     s.c -= aₜ.c + aₕ.c - aₒ.c
-    return
+    return s
 end
