@@ -14,8 +14,8 @@ using Random
         k̅   =   500                     ,
         Ψᵣ  =   [
                     :random_remove! , 
-                    :worst_remove!  , 
-                    :shaw_remove!
+                    :shaw_remove!   ,
+                    :worst_remove!   
                 ]                       , 
         Ψᵢ  =   [
                     :best_insert!   ,
