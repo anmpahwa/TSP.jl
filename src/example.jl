@@ -5,12 +5,14 @@ using Random
 let
 # Developing an optimal TSP route 
     # Define instance
-    instance = "eil101"
+    instance = "a280"
     # Define a random number generator
     rng = MersenneTwister(1234)
     # Build instance as graph
     G = build(instance)
     N, A = G
+    # Visualize instance
+    display(visualize(Solution(N,A)))
     # Define inital solution method and build the initial solution
     method = :cw_init
     sₒ = initialsolution(rng, G, method)
@@ -52,6 +54,10 @@ let
     S = ALNS(rng, χ, sₒ)
     s⃰ = S[end]
 
+# Fetch objective function values
+    println("Initial: $(f(sₒ))")
+    println("Optimal: $(f(s⃰))")
+
 # Visualizations
     # Visualize initial solution
     display(visualize(sₒ)) 
@@ -62,9 +68,5 @@ let
     # Show convergence plots
     display(convergence(S))
 
-# Fetch objective function values
-    println("Initial: $(f(sₒ))")
-    println("Optimal: $(f(s⃰))")
-    
     return
 end
