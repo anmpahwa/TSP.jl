@@ -17,11 +17,13 @@ let
     method = :cw_init
     sₒ = initialsolution(rng, G, method)
     # Define ALNS parameters
+    x = length(N)
+    n = ceil(x, digits=-(length(digits(x))-1))
     χ   = ALNSParameters(
-        k̲   =   2                       ,
-        l̲   =   80                      ,
-        l̅   =   100                     ,
-        k̅   =   500                     ,
+        k̲   =   n ÷ 25                  ,
+        l̲   =   2n                      ,
+        l̅   =   5n                      ,
+        k̅   =   10n                     ,
         Ψᵣ  =   [
                     :random_remove! , 
                     :shaw_remove!   ,
@@ -53,11 +55,9 @@ let
     # Run ALNS and fetch best solution
     S = ALNS(rng, χ, sₒ)
     s⃰ = S[end]
-
 # Fetch objective function values
     println("Initial: $(f(sₒ))")
     println("Optimal: $(f(s⃰))")
-
 # Visualizations
     # Visualize initial solution
     display(visualize(sₒ)) 
@@ -67,6 +67,5 @@ let
     display(animate(S))
     # Show convergence plots
     display(convergence(S))
-
     return
 end
