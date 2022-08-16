@@ -64,8 +64,8 @@ let
     # Visualize best solution   
     display(visualize(s⃰))
     # Animate ALNS solution search process from inital to best solution
-    display(animate(S))
+    #display(animate(S))
     # Show convergence plots
-    display(convergence(S))
+    #display(convergence(S))
     return
 end
