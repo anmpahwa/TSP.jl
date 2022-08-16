@@ -8,10 +8,10 @@ using Random
     instances = ["att48", "eil101", "ch150", "d198", "a280"]
     methods = [:cw_init, :nn_init, :random_init, :regret₂init, :regret₃init]
     χ   = ALNSParameters(
-        k̲   =   2                       ,
-        l̲   =   80                      ,
-        l̅   =   100                     ,
-        k̅   =   500                     ,
+        k̲   =   1                       ,
+        l̲   =   50                      ,
+        l̅   =   125                     ,
+        k̅   =   250                     ,
         Ψᵣ  =   [
                     :random_remove! , 
                     :shaw_remove!   ,
