@@ -21,11 +21,13 @@ function vectorize(s::Solution)
 end
 
 """
-    visualize(s::Solution)
+    visualize(s::Solution; backend=plotly)
 
 Plots solution depicting route and unvisited nodes (if any).
+Uses given backend to plot.
 """
-function visualize(s::Solution)
+function visualize(s::Solution; backend=gr)
+    backend()
     N = s.N
     fig = plot(legend=:none)
     # Open nodes
@@ -42,7 +44,7 @@ function visualize(s::Solution)
         Y[k] = n.y
         W[k] = "DarkBlue"
     end
-    scatter!(X, Y, markersize=5, markerstrokewidth=0, color=W)
+    scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
     plot!(X, Y, color="SteelBlue")
     # Closed nodes
     L  = [n.i for n ∈ N if isopen(n)]
@@ -58,7 +60,7 @@ function visualize(s::Solution)
         Y′[k] = n.y
         W′[k] = "LightBlue"
     end
-    scatter!(X′, Y′, markersize=5, markerstrokewidth=0, color=W′)
+    scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
     return fig
 end
 
@@ -69,10 +71,10 @@ Iteratively plots solutions in `S` to develop a gif at given `fps`.
 """
 function animate(S::Vector{Solution}, fps=10)
     K = 0:(length(S)-1)
-    figs = Vector{Plots.Plot{Plots.GRBackend}}(undef, length(S))
+    figs = Vector(undef, length(S))
     for (k, s) ∈ enumerate(S)
-        fig = visualize(s)
-        plot!(title="iter:$(K[k])")
+        fig = visualize(s, backend=gr)
+        plot!(title="Iteration #$(K[k])", titlefontsize=11)
         figs[k] = fig
     end
     anim = @animate for fig in figs
@@ -82,12 +84,16 @@ function animate(S::Vector{Solution}, fps=10)
 end
 
 """
-    convergence(S::Vector{Solution})
+    convergence(S::Vector{Solution}; backend=gr)
 
 Plots objective function values for solutions in `S`.
+Uses given backend to plot.
 """
-function convergence(S::Vector{Solution})
+function convergence(S::Vector{Solution}; backend=gr)
+    backend()
     Y = [f(s) for s ∈ S]
     X = 0:(length(S)-1)
-    plot(X,Y)
+    fig = plot(legend=:none)
+    plot!(X,Y, xlabel="iterations", ylabel="objective function value")
+    return fig
 end
