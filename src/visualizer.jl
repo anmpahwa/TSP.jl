@@ -21,10 +21,10 @@ function vectorize(s::Solution)
 end
 
 """
-    visualize(s::Solution; backend=plotly)
+    visualize(s::Solution; backend=gr)
 
 Plots solution depicting route and unvisited nodes (if any).
-Uses given backend to plot.
+Uses given backend to plot (default backend gr).
 """
 function visualize(s::Solution; backend=gr)
     backend()
@@ -87,7 +87,7 @@ end
     convergence(S::Vector{Solution}; backend=gr)
 
 Plots objective function values for solutions in `S`.
-Uses given backend to plot.
+Uses given backend to plot (default backend gr).
 """
 function convergence(S::Vector{Solution}; backend=gr)
     backend()
