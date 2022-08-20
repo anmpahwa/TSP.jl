@@ -3,31 +3,31 @@
 
 # Traveling Salesman Problem (TSP)
 
-Given a graph `G = (N,A)` with set of nodes N and set of arcs `A = {(i,j) ; i,j ∈ N}` 
-with arc traversal cost `cᵢⱼ ; (i,j) ∈ A`, the objective is to develop a least cost 
+Given a graph G = (N,A) with set of nodes N and set of arcs A = {(i,j) ; i,j ∈ N}
+with arc traversal cost cᵢⱼ ; (i,j) ∈ A, the objective is to develop a least cost 
 route visiting every node exactly once.
 
 This package uses Adaptive Large Neighborhood Search (ALNS) algorithm to find an 
 optimal solution for the Traveling Salesman Problem given ALNS optimization 
 parameters,
-- k̲     :   Number of ALNS iterations triggering operator probability update (segment size)
-- l̲     :   Number of ALNS iterations triggering local search
-- l̅     :   Number of local search iterations
-- k̅     :   Number of ALNS iterations
-- Ψᵣ    :   Vector of removal operators
-- Ψᵢ    :   Vector of insertion operators
-- Ψₗ    :   Vector of local search operators
-- σ₁    :   Score for a new best solution
-- σ₂    :   Score for a new better solution
-- σ₃    :   Score for a new worse but accepted solution
-- ω     :   Start tempertature control threshold 
-- τ     :   Start tempertature control probability
-- 𝜃     :   Cooling rate
-- C̲     :   Minimum customer nodes removal
-- C̅     :   Maximum customer nodes removal
-- μ̲     :   Minimum removal fraction
-- μ̅     :   Maximum removal fraction
-- ρ     :   Reaction factor
+- `k̲`     :   Number of ALNS iterations triggering operator probability update (segment size)
+- `l̲`     :   Number of ALNS iterations triggering local search
+- `l̅`     :   Number of local search iterations
+- `k̅`     :   Number of ALNS iterations
+- `Ψᵣ`    :   Vector of removal operators
+- `Ψᵢ`    :   Vector of insertion operators
+- `Ψₗ`    :   Vector of local search operators
+- `σ₁`    :   Score for a new best solution
+- `σ₂`    :   Score for a new better solution
+- `σ₃`    :   Score for a new worse but accepted solution
+- `ω`     :   Start tempertature control threshold 
+- `τ`     :   Start tempertature control probability
+- `𝜃`     :   Cooling rate
+- `C̲`     :   Minimum customer nodes removal
+- `C̅`     :   Maximum customer nodes removal
+- `μ̲`     :   Minimum removal fraction
+- `μ̅`     :   Maximum removal fraction
+- `ρ`     :   Reaction factor
 
 and an initial solution developed using one of the following methods,
 - Clarke and Wright Savings Algorithm   : `:cw_init`
@@ -36,18 +36,18 @@ and an initial solution developed using one of the following methods,
 - Regret K Insertion                    : `:regret₂init`, `:regret₃init`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
-- Random Removal    : `random_remove!`
-- Shaw Removal      : `shaw_remove!`
-- Worst Removal     : `worst_remove!`
+- Random Removal    : `:random_remove!`
+- Shaw Removal      : `:shaw_remove!`
+- Worst Removal     : `:worst_remove!`
 
 and consequently inserts removed nodes using,
-- Best Insertion    : `best_insert!`
-- Greedy Insertion  : `greedy_insert!`
-- Regret Insertion  : `regret₂insert!`, `regret₃insert!`
+- Best Insertion    : `:best_insert!`
+- Greedy Insertion  : `:greedy_insert!`
+- Regret Insertion  : `:regret₂insert!`, `:regret₃insert!`
 
 In every few iterations, the ALNS metaheuristic performs local search with,
-- Move  : `move!`
-- 2-Opt : `opt!`
-- Swap  : `swap!`
+- Move  : `:move!`
+- 2-Opt : `:opt!`
+- Swap  : `:swap!`
 
 See example.jl for usage
