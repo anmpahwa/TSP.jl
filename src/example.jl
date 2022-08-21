@@ -6,18 +6,15 @@ let
 # Developing an optimal TSP route 
     # Define instance
     instance = "a280"
+    # Visualize instance
+    display(visualize(instance))
     # Define a random number generator
     rng = MersenneTwister(1234)
-    # Build instance as graph
-    G = build(instance)
-    N, A = G
-    # Visualize instance
-    display(visualize(Solution(N,A)))
     # Define inital solution method and build the initial solution
     method = :cw_init
-    sₒ = initialsolution(rng, G, method)
+    sₒ = initialsolution(rng, instance, method)
     # Define ALNS parameters
-    x = length(N)
+    x = length(sₒ.N)
     n = ceil(x, digits=-(length(digits(x))-1))
     χ   = ALNSParameters(
         k̲   =   n ÷ 25                  ,

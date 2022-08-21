@@ -1,8 +1,4 @@
-"""
-    build(instance)
-
-Builds graph as set of nodes and arcs for `instance`.
-"""
+# Builds instance as graph with set of nodes and arcs.
 function build(instance)
     f = joinpath(dirname(@__DIR__), "$instances/$instance.csv")
     csv = CSV.File(f, types=[Int64, Float64, Float64])

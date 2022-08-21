@@ -1,7 +1,7 @@
 """
     vectorize(s::Solution)
 
-Returns solution as a sequence of nodes in the order of visits.
+Returns solution `s` as a sequence of nodes in the order of visits.
 """
 function vectorize(s::Solution)
     N = s.N
@@ -23,8 +23,8 @@ end
 """
     visualize(s::Solution; backend=gr)
 
-Plots solution depicting route and unvisited nodes (if any).
-Uses given backend to plot (default backend gr).
+Plots solution `s` depicting route and unvisited nodes (if any).
+Uses given `backend` to plot (defaults to `gr`).
 """
 function visualize(s::Solution; backend=gr)
     backend()
@@ -63,6 +63,30 @@ function visualize(s::Solution; backend=gr)
     scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
     return fig
 end
+"""
+    visualize(instance; backend=gr)
+
+Plots `instance`.
+Uses given `backend` to plot (defaults to `gr`).
+"""
+function visualize(instance; backend=gr)
+    backend()
+    G = build(instance)
+    N, _ = G
+    fig = plot(legend=:none)
+    I = eachindex(N)
+    X = zeros(Float64, I)
+    Y = zeros(Float64, I)
+    W = fill("color", I)
+    for i ∈ I
+        n = N[i]
+        X[i] = n.x
+        Y[i] = n.y
+        W[i] = "LightBlue"
+    end
+    scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
+    return fig
+end
 
 """
     animate(S::Vector{Solution}, fps=10)
@@ -87,7 +111,7 @@ end
     convergence(S::Vector{Solution}; backend=gr)
 
 Plots objective function values for solutions in `S`.
-Uses given backend to plot (default backend gr).
+Uses given `backend` to plot (defaults to `gr`).
 """
 function convergence(S::Vector{Solution}; backend=gr)
     backend()

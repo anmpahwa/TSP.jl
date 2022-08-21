@@ -44,11 +44,11 @@ Base.hash(s::Solution) = hash(vectorize(s))
 """
     f(s::Solution)
 
-Returns objective function value (solution cost)
+Returns objective function value (solution cost).
 """
 f(s::Solution) = s.c
 """
-    infeasible(s::Solution)
+    isfeasible(s::Solution)
 
 Returns true if node service constraint, node flow constraint, and
 sub-tour elimination constraint are not violated.

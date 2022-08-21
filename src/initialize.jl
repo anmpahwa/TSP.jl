@@ -1,7 +1,7 @@
 """
-    initialsolution([rng], (N::Vector{Node}, A::Dict{Tuple{Int64, Int64}, Arc}), method)
+    initialsolution([rng], instance, method)
 
-Returns initial TSP solution using given `method` on graph with nodes `N` and arcs `A`.
+Returns initial TSP solution for the given `instance` using the given `method`.
 Available methods include,
 - Clarke and Wright Savings Algorithm   : `:cw_init`
 - Nearest Neighborhood Algorithm        : `:nn_init`
@@ -11,12 +11,13 @@ Available methods include,
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
 """
-initialsolution(rng::AbstractRNG, G, method::Symbol)::Solution = getfield(TSP, method)(rng, G)
-initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, method)
+initialsolution(rng::AbstractRNG, instance, method::Symbol)::Solution = getfield(TSP, method)(rng, instance)
+initialsolution(instance, method::Symbol) = initialsolution(Random.GLOBAL_RNG, instance, method)
 
 # Clarke and Wright Savings Algorithm
 # Create initial solution by merging routes that render the most savings until single route traversing all nodes remains
-function cw_init(rng::AbstractRNG, G)
+function cw_init(rng::AbstractRNG, instance)
+    G = build(instance)
     N, A = G
     s = Solution(N, A)
     d = N[1]
@@ -103,7 +104,8 @@ end
 
 # Nearest Neighborhood Algorithm
 # Create initial solution appending nodes that result in least increase in cost until all nodes have been added to the solution
-function nn_init(rng::AbstractRNG, G)
+function nn_init(rng::AbstractRNG, instance)
+    G = build(instance)
     N, A = G
     s = Solution(N, A)
     N = s.N
@@ -144,7 +146,8 @@ end
 
 # Random Initialization
 # Create initial solution by iteratively appending randomly selected node until all nodes have been added to the solution
-function random_init(rng::AbstractRNG, G)
+function random_init(rng::AbstractRNG, instance)
+    G = build(instance)
     N, A = G
     s = Solution(N, A)
     d = N[1]
@@ -167,7 +170,8 @@ end
 
 # Regret-K Insertion
 # Create initial solution by iteratively adding nodes with highest regret cost as its best position until all nodes have been added to the solution
-function regretₖinit(rng::AbstractRNG, K::Int64, G)
+function regretₖinit(rng::AbstractRNG, K::Int64, instance)
+    G = build(instance)
     N, A = G
     s = Solution(N, A)
     d = N[1]
@@ -230,5 +234,5 @@ function regretₖinit(rng::AbstractRNG, K::Int64, G)
     # Step 3: Return initial solution
     return s
 end
-regret₂init(rng::AbstractRNG, G) = regretₖinit(rng, Int64(2), G)
-regret₃init(rng::AbstractRNG, G) = regretₖinit(rng, Int64(3), G)
+regret₂init(rng::AbstractRNG, instance) = regretₖinit(rng, Int64(2), instance)
+regret₃init(rng::AbstractRNG, instance) = regretₖinit(rng, Int64(3), instance)

@@ -18,8 +18,8 @@ include("localsearch.jl")
 include("ALNS.jl")
 include("visualizer.jl")
 
-export  Node, Arc, Solution, ALNSParameters,
-        build, f, isfeasible, initialsolution, ALNS,
+export  Solution, f, isfeasible, 
+        ALNSParameters, initialsolution, ALNS,
         vectorize, visualize, animate, convergence
         
 end
