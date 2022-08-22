@@ -62,7 +62,7 @@ let
     display(visualize(s⃰))
     # Animate ALNS solution search process from inital to best solution
     display(animate(S))
-    # Show convergence plots
-    display(convergence(S))
+    # Show convergence plot
+    display(plotconv(S))
     return
 end
