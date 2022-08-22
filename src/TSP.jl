@@ -18,7 +18,7 @@ include("localsearch.jl")
 include("ALNS.jl")
 include("visualize.jl")
 
-export  Solution, f, isfeasible, 
+export  f, isfeasible, 
         ALNSParameters, initialsolution, ALNS,
         vectorize, visualize, animate, plotconv
         
