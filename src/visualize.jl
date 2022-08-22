@@ -1,69 +1,4 @@
 """
-    vectorize(s::Solution)
-
-Returns solution `s` as a sequence of nodes in the order of visits.
-"""
-function vectorize(s::Solution)
-    N = s.N
-    d = N[1]
-    V = Int64[]
-    if isopen(d) return V end
-    nₜ = d
-    nₕ = N[nₜ.h]
-    push!(V, d.i)
-    while true
-        push!(V, nₕ.i)
-        if isequal(nₕ, d) break end
-        nₜ = nₕ
-        nₕ = N[nₜ.h]
-    end
-    return V
-end
-
-"""
-    visualize(s::Solution; backend=gr)
-
-Plots solution `s` depicting route and unvisited nodes (if any).
-Uses given `backend` to plot (defaults to `gr`).
-"""
-function visualize(s::Solution; backend=gr)
-    backend()
-    N = s.N
-    fig = plot(legend=:none)
-    # Open nodes
-    V = vectorize(s)
-    Z = V
-    K = length(Z)
-    X = zeros(Float64, K)
-    Y = zeros(Float64, K)
-    W = fill("color", K)
-    for k ∈ 1:K
-        i = Z[k]
-        n = N[i]
-        X[k] = n.x
-        Y[k] = n.y
-        W[k] = "DarkBlue"
-    end
-    scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
-    plot!(X, Y, color="SteelBlue")
-    # Closed nodes
-    L  = [n.i for n ∈ N if isopen(n)]
-    Z′ = L
-    K′ = length(Z′)
-    X′ = zeros(Float64, K′)
-    Y′ = zeros(Float64, K′)
-    W′ = fill("color", K′)
-    for k ∈ 1:K′
-        i = Z′[k]
-        n = N[i]
-        X′[k] = n.x
-        Y′[k] = n.y
-        W′[k] = "LightBlue"
-    end
-    scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
-    return fig
-end
-"""
     visualize(instance; backend=gr)
 
 Plots `instance`.
@@ -87,6 +22,71 @@ function visualize(instance; backend=gr)
     scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
     return fig
 end
+"""
+    visualize(s::Solution; backend=gr)
+
+Plots solution `s` depicting route and unvisited nodes (if any).
+Uses given `backend` to plot (defaults to `gr`).
+"""
+function visualize(s::Solution; backend=gr)
+    backend()
+    N = s.N
+    fig = plot(legend=:none)
+    # Closed nodes
+    V = vectorize(s)
+    Z = V
+    K = length(Z)
+    X = zeros(Float64, K)
+    Y = zeros(Float64, K)
+    W = fill("color", K)
+    for k ∈ 1:K
+        i = Z[k]
+        n = N[i]
+        X[k] = n.x
+        Y[k] = n.y
+        W[k] = "DarkBlue"
+    end
+    scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
+    plot!(X, Y, color="SteelBlue")
+    # Open nodes
+    L  = [n.i for n ∈ N if isopen(n)]
+    Z′ = L
+    K′ = length(Z′)
+    X′ = zeros(Float64, K′)
+    Y′ = zeros(Float64, K′)
+    W′ = fill("color", K′)
+    for k ∈ 1:K′
+        i = Z′[k]
+        n = N[i]
+        X′[k] = n.x
+        Y′[k] = n.y
+        W′[k] = "LightBlue"
+    end
+    scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
+    return fig
+end
+
+"""
+    vectorize(s::Solution)
+
+Returns solution `s` as a sequence of nodes in the order of visits.
+"""
+function vectorize(s::Solution)
+    N = s.N
+    d = N[1]
+    V = Int64[]
+    if isopen(d) return V end
+    nₜ = d
+    nₕ = N[nₜ.h]
+    push!(V, d.i)
+    while true
+        push!(V, nₕ.i)
+        if isequal(nₕ, d) break end
+        nₜ = nₕ
+        nₕ = N[nₜ.h]
+    end
+    return V
+end
 
 """
     animate(S::Vector{Solution}, fps=10)
@@ -108,12 +108,12 @@ function animate(S::Vector{Solution}, fps=10)
 end
 
 """
-    convergence(S::Vector{Solution}; backend=gr)
+    plotconv(S::Vector{Solution}; backend=gr)
 
 Plots objective function values for solutions in `S`.
 Uses given `backend` to plot (defaults to `gr`).
 """
-function convergence(S::Vector{Solution}; backend=gr)
+function plotconv(S::Vector{Solution}; backend=gr)
     backend()
     Y = [f(s) for s ∈ S]
     X = 0:(length(S)-1)

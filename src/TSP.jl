@@ -16,7 +16,7 @@ include("remove.jl")
 include("insert.jl")
 include("localsearch.jl")
 include("ALNS.jl")
-include("visualizer.jl")
+include("visualize.jl")
 
 export  Solution, f, isfeasible, 
         ALNSParameters, initialsolution, ALNS,
