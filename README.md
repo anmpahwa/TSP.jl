@@ -30,20 +30,17 @@ parameters,
 - `ρ`     :   Reaction factor
 
 and an initial solution developed using one of the following methods,
-- Clarke and Wright Savings Algorithm   : `:cw_init`
-- Nearest Neighborhood Algorithm        : `:nn_init`
-- Random Initialization                 : `:random_init`
-- Regret K Insertion                    : `:regret₂init`, `:regret₃init`
+- Clarke and Wright Savings Algorithm   : `:cw`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
-- Random Removal    : `:random_remove!`
-- Shaw Removal      : `:shaw_remove!`
-- Worst Removal     : `:worst_remove!`
+- Random Removal    : `:random!`
+- Rekated Removal   : `:related!`
+- Worst Removal     : `:worst!`
 
 and consequently inserts removed nodes using,
-- Best Insertion    : `:best_insert!`
-- Greedy Insertion  : `:greedy_insert!`
-- Regret Insertion  : `:regret₂insert!`, `:regret₃insert!`
+- Best Insertion    : `:best!`
+- Greedy Insertion  : `:greedy!`
+- Regret Insertion  : `:regret2!`, `:regret3!`
 
 In every few iterations, the ALNS metaheuristic performs local search with,
 - Move  : `:move!`
@@ -51,3 +48,5 @@ In every few iterations, the ALNS metaheuristic performs local search with,
 - Swap  : `:swap!`
 
 See example.jl for usage
+
+Additional initialization, removal, insertion, and local search methods can be defined.
