@@ -4,28 +4,26 @@ using Test
 using Random
 
 @testset "TSP.jl" begin
-    K = 5
     instances = ["att48", "eil101", "ch150", "d198", "a280"]
-    methods = [:cw_init, :nn_init, :random_init, :regret₂init, :regret₃init]
     χ   = ALNSParameters(
         k̲   =   1                       ,
         l̲   =   50                      ,
         l̅   =   125                     ,
         k̅   =   250                     ,
         Ψᵣ  =   [
-                    :random_remove! , 
-                    :shaw_remove!   ,
-                    :worst_remove!   
+                    :random!    , 
+                    :related!   ,
+                    :worst!   
                 ]                       , 
         Ψᵢ  =   [
-                    :best_insert!   ,
-                    :greedy_insert! ,
-                    :regret₂insert! ,
-                    :regret₃insert!
+                    :best!      ,
+                    :greedy!    ,
+                    :regret2!   ,
+                    :regret3!
                 ]                       ,
         Ψₗ  =   [
-                    :move!          ,
-                    :opt!           ,
+                    :move!      ,
+                    :opt!       ,
                     :swap!
                 ]                       ,
         σ₁  =   33                      ,
@@ -40,11 +38,9 @@ using Random
         μ̅   =   0.4                     ,
         ρ   =   0.1                     ,
     )
-    for k ∈ 1:K
-        instance = instances[k]
-        method = methods[k]
+    for instance ∈ instances
         println("\n Solving $instance")
-        sₒ = initialsolution(instance, method)     
+        sₒ = initialsolution(instance, :cw)     
         S  = ALNS(χ, sₒ)
         s⃰  = S[end]
         @test isfeasible(sₒ)

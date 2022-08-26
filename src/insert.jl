@@ -4,9 +4,9 @@
 Return solution inserting open nodes to the solution `s` using the given `method`.
 
 Available methods include,
-- Best Insertion    : `:best_insert!`
-- Greedy Insertion  : `:greedy_insert!`
-- Regret Insertion  : `:regret₂insert!`, `:regret₃insert!`
+- Best Insertion    : `:best!`
+- Greedy Insertion  : `:greedy!`
+- Regret Insertion  : `:regret2!`, `:regret3!`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -16,7 +16,7 @@ insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
 # Best insertion
 # Iteratively insert randomly selected node at its best position until all open nodes have been added to the solution
-function best_insert!(rng::AbstractRNG, s::Solution)
+function best!(rng::AbstractRNG, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -67,7 +67,7 @@ end
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedy_insert!(rng::AbstractRNG, s::Solution)
+function greedy!(rng::AbstractRNG, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -117,7 +117,7 @@ end
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretₖinsert!(rng::AbstractRNG, K::Int64, s::Solution)
+function regretK!(rng::AbstractRNG, K::Int64, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -180,5 +180,5 @@ function regretₖinsert!(rng::AbstractRNG, K::Int64, s::Solution)
     # Step 3: Return initial solution
     return s
 end
-regret₂insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, Int64(2), s)
-regret₃insert!(rng::AbstractRNG, s::Solution) = regretₖinsert!(rng, Int64(3), s)
+regret2!(rng::AbstractRNG, s::Solution) = regretK!(rng, Int64(2), s)
+regret3!(rng::AbstractRNG, s::Solution) = regretK!(rng, Int64(3), s)

@@ -22,19 +22,19 @@ let
         l̅   =   5n                      ,
         k̅   =   10n                     ,
         Ψᵣ  =   [
-                    :random_remove! , 
-                    :shaw_remove!   ,
-                    :worst_remove!   
+                    :random!    , 
+                    :related!   ,
+                    :worst!   
                 ]                       , 
         Ψᵢ  =   [
-                    :best_insert!   ,
-                    :greedy_insert! ,
-                    :regret₂insert! ,
-                    :regret₃insert!
+                    :best!      ,
+                    :greedy!    ,
+                    :regret2!   ,
+                    :regret3!
                 ]                       ,
         Ψₗ  =   [
-                    :move!          ,
-                    :opt!           ,
+                    :move!      ,
+                    :opt!       ,
                     :swap!
                 ]                       ,
         σ₁  =   33                      ,

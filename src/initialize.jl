@@ -3,7 +3,7 @@
 
 Returns initial TSP solution for the given `instance` using the given `method`.
 Available methods include,
-- Clarke and Wright Savings Algorithm   : `:cw_init`
+- Clarke and Wright Savings Algorithm   : `:cw`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -13,7 +13,7 @@ initialsolution(instance, method::Symbol) = initialsolution(Random.GLOBAL_RNG, i
 
 # Clarke and Wright Savings Algorithm
 # Create initial solution by merging routes that render the most savings until single route traversing all nodes remains
-function cw_init(rng::AbstractRNG, instance)
+function cw(rng::AbstractRNG, instance)
     G = build(instance)
     N, A = G
     s = Solution(N, A)

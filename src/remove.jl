@@ -6,9 +6,9 @@
 Return solution removing `q` nodes from solution `s` using the given `method`.
 
 Available methods include,
-- Random Removal    : `:random_remove!`
-- Shaw Removal      : `:shaw_remove!`
-- Worst Removal     : `:worst_remove!`
+- Random Removal    : `:random!`
+- Shaw Removal      : `:related!`
+- Worst Removal     : `:worst!`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -18,7 +18,7 @@ remove!(q::Int64, s::Solution, method::Symbol) = remove!(Random.GLOBAL_RNG, q, s
 
 # Random Removal
 # Randomly select q nodes to remove
-function random_remove!(rng::AbstractRNG, q::Int64, s::Solution)
+function random!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     d = N[1]
@@ -36,9 +36,9 @@ function random_remove!(rng::AbstractRNG, q::Int64, s::Solution)
     return s
 end
 
-# Shaw Removal
+# Related (Shaw) Removal
 # For a randomly selected customer node, remove q most related customer nodes
-function shaw_remove!(rng::AbstractRNG, q::Int64, s::Solution)
+function related!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     A = s.A
     I = length(N)-1
@@ -65,7 +65,7 @@ end
 
 # Worst Removal
 # Remove q nodes with highest removal cost
-function worst_remove!(rng::AbstractRNG, q::Int64, s::Solution)
+function worst!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     # Step 1: Iterate until q nodes have been removed
