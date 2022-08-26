@@ -5,17 +5,16 @@ using Random
 let
 # Developing an optimal TSP route 
     # Define instance
-    instance = "a280"
+    instance = "a280";
     # Visualize instance
     display(visualize(instance))
     # Define a random number generator
-    rng = MersenneTwister(1234)
+    rng = MersenneTwister(1234);
     # Define inital solution method and build the initial solution
-    method = :cw_init
-    sₒ = initialsolution(rng, instance, method)
+    sₒ = initialsolution(rng, instance, :cw)
     # Define ALNS parameters
-    x = length(sₒ.N)
-    n = ceil(x, digits=-(length(digits(x))-1))
+    x = length(sₒ.N);
+    n = ceil(x, digits=-(length(digits(x))-1));
     χ   = ALNSParameters(
         k̲   =   n ÷ 25                  ,
         l̲   =   2n                      ,
@@ -48,10 +47,10 @@ let
         μ̲   =   0.1                     ,
         μ̅   =   0.4                     ,
         ρ   =   0.1                     ,
-    )
+    );
     # Run ALNS and fetch best solution
-    S = ALNS(rng, χ, sₒ)
-    s⃰ = S[end]
+    S = ALNS(rng, χ, sₒ);
+    s⃰ = S[end];
 # Fetch objective function values
     println("Initial: $(f(sₒ))")
     println("Optimal: $(f(s⃰))")
