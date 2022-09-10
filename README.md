@@ -3,9 +3,9 @@
 
 # Traveling Salesman Problem (TSP)
 
-Given a graph `G = (N,A)` with set of nodes N and set of arcs `A = {(i,j) ; i,j ∈ N}`
-with arc traversal cost `cᵢⱼ ; (i,j) ∈ A`, the objective is to develop a least cost 
-route visiting every node exactly once.
+Given a graph `G = (N,A)` with set of nodes N and set of arcs `A` with arc traversal 
+cost `cᵢⱼ ; (i,j) ∈ A`, the objective is to develop a least cost route visiting every 
+node exactly once.
 
 This package uses Adaptive Large Neighborhood Search (ALNS) algorithm to find an 
 optimal solution for the Traveling Salesman Problem given ALNS optimization 
