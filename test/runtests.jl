@@ -4,7 +4,8 @@ using Test
 using Random
 
 @testset "TSP.jl" begin
-    instances = ["att48", "eil101", "ch150", "d198", "a280"]
+    instances = ["d198", "a280"]
+    methods   = [:random, :cw]
     χ   = ALNSParameters(
         k̲   =   1                       ,
         l̲   =   50                      ,
@@ -38,9 +39,11 @@ using Random
         μ̅   =   0.4                     ,
         ρ   =   0.1                     ,
     )
-    for instance ∈ instances
+    for k ∈ 1:2
+        instance = instances[k]
+        method   = methods[k]
         println("\n Solving $instance")
-        sₒ = initialsolution(instance, :cw)     
+        sₒ = initialsolution(instance, method)     
         S  = ALNS(χ, sₒ)
         s⃰  = S[end]
         @test isfeasible(sₒ)

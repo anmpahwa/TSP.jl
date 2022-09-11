@@ -32,6 +32,7 @@ parameters,
 
 and an initial solution developed using one of the following methods,
 - Clarke and Wright Savings Algorithm   : `:cw`
+- Random Initialization                 : `:random`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
 - Random Removal    : `:random!`

@@ -4,6 +4,7 @@
 Returns initial TSP solution for the given `instance` using the given `method`.
 Available methods include,
 - Clarke and Wright Savings Algorithm   : `:cw`
+- Random Initialization                 : `:random`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -96,5 +97,26 @@ function cw(rng::AbstractRNG, instance)
     for n ∈ N d.t = isequal(n.h, d.i) ? n.i : d.t end
     for n ∈ N d.h = isequal(n.t, d.i) ? n.i : d.h end
     # Step 3: Return initial solution
+    return s
+end
+
+# Random Initialization
+# Develop a randomized initial solution
+function random(rng::AbstractRNG, instance)
+    G = build(instance)
+    N, A = G
+    s  = Solution(N, A)
+    d  = N[1]
+    # Step 1: Intialize tail nₜ and head node nₕ as depot nodes
+    nₜ = d
+    nₕ = d
+    while any(isopen, N)
+        # Step 1.1: Randomly select a node nₒ to insert between tail node nₜ (depot node d) and head node nₕ
+        nₒ = sample(rng, N, Weights(isopen.(N)))
+        insertnode!(nₒ, nₜ, nₕ, s)
+        # Step 1.2: Update head node nₕ as current node nₒ
+        nₕ = nₒ
+    end
+    # Step 2: Return initial solution
     return s
 end
