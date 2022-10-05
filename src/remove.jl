@@ -6,9 +6,9 @@
 Return solution removing `q` nodes from solution `s` using the given `method`.
 
 Available methods include,
-- Random Removal    : `:random!`
-- Shaw Removal      : `:related!`
-- Worst Removal     : `:worst!`
+- Random Node Removal    : `:randomnode!`
+- Related Node Removal   : `:relatednode!`
+- Worst Node Removal     : `:worstnode!`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -16,9 +16,9 @@ Optionally specify a random number generator `rng` as the first argument
 remove!(rng::AbstractRNG, q::Int64, s::Solution, method::Symbol)::Solution = getfield(TSP, method)(rng, q, s)
 remove!(q::Int64, s::Solution, method::Symbol) = remove!(Random.GLOBAL_RNG, q, s, method)
 
-# Random Removal
+# Random Node Removal
 # Randomly select q nodes to remove
-function random!(rng::AbstractRNG, q::Int64, s::Solution)
+function randomnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     d = N[1]
@@ -36,9 +36,9 @@ function random!(rng::AbstractRNG, q::Int64, s::Solution)
     return s
 end
 
-# Related (Shaw) Removal
+# Related (Shaw) Node Removal
 # For a randomly selected customer node, remove q most related customer nodes
-function related!(rng::AbstractRNG, q::Int64, s::Solution)
+function relatednode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     A = s.A
     I = length(N)-1
@@ -63,9 +63,9 @@ function related!(rng::AbstractRNG, q::Int64, s::Solution)
     return s
 end
 
-# Worst Removal
+# Worst Node Removal
 # Remove q nodes with highest removal cost
-function worst!(rng::AbstractRNG, q::Int64, s::Solution)
+function worstnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     # Step 1: Iterate until q nodes have been removed

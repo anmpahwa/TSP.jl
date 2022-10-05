@@ -21,6 +21,6 @@ include("visualize.jl")
 
 export  f, isfeasible, 
         ALNSParameters, initialsolution, ALNS,
-        vectorize, visualize, animate, plotconv
+        vectorize, visualize, animate, pltcnv
         
 end

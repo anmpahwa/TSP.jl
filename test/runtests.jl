@@ -12,9 +12,9 @@ using Random
         l̅   =   125                     ,
         k̅   =   250                     ,
         Ψᵣ  =   [
-                    :random!    , 
-                    :related!   ,
-                    :worst!   
+                    :randomnode!    , 
+                    :relatednode!   ,
+                    :worstnode!   
                 ]                       , 
         Ψᵢ  =   [
                     :bestprecise!   ,

@@ -5,13 +5,13 @@ using Random
 let
 # Developing an optimal TSP route 
     # Define instance
-    instance = "a280";
+    instance = "att48";
     # Visualize instance
     display(visualize(instance))
     # Define a random number generator
     rng = MersenneTwister(1234);
     # Define inital solution method and build the initial solution
-    sₒ = initialsolution(rng, instance, :cw)
+    sₒ = initialsolution(rng, instance, :random);
     # Define ALNS parameters
     x = length(sₒ.N);
     n = ceil(x, digits=-(length(digits(x))-1));
@@ -21,10 +21,10 @@ let
         l̅   =   5n                      ,
         k̅   =   10n                     ,
         Ψᵣ  =   [
-                    :random!    , 
-                    :related!   ,
-                    :worst!   
-                ]                       , 
+                    :randomnode!    ,
+                    :relatednode!   ,
+                    :worstnode!
+                ]                       ,
         Ψᵢ  =   [
                     :bestprecise!   ,
                     :bestperturb!   ,
@@ -64,6 +64,6 @@ let
     # Animate ALNS solution search process from inital to best solution
     display(animate(S))
     # Show convergence plot
-    display(plotconv(S))
+    display(pltcnv(S))
     return
 end

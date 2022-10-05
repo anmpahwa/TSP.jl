@@ -63,6 +63,10 @@ function visualize(s::Solution; backend=gr)
         W′[k] = "LightBlue"
     end
     scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
+    # Annotation
+    x = minimum(getproperty.(N, :x))
+    y = maximum(getproperty.(N, :y))
+    annotate!(x, y, text("f(s): $(Int64(round(f(s))))", :left, 10))
     return fig
 end
 
@@ -89,11 +93,11 @@ function vectorize(s::Solution)
 end
 
 """
-    animate(S::Vector{Solution}, fps=10)
+    animate(S::Vector{Solution}; fps=10)
 
 Iteratively plots solutions in `S` to develop a gif at given `fps`.
 """
-function animate(S::Vector{Solution}, fps=10)
+function animate(S::Vector{Solution}; fps=10)
     K = 0:(length(S)-1)
     figs = Vector(undef, length(S))
     for (k, s) ∈ enumerate(S)
@@ -108,12 +112,12 @@ function animate(S::Vector{Solution}, fps=10)
 end
 
 """
-    plotconv(S::Vector{Solution}; backend=gr)
+    pltcnv(S::Vector{Solution}; backend=gr)
 
 Plots objective function values for solutions in `S`.
 Uses given `backend` to plot (defaults to `gr`).
 """
-function plotconv(S::Vector{Solution}; backend=gr)
+function pltcnv(S::Vector{Solution}; backend=gr)
     backend()
     Y = [f(s) for s ∈ S]
     X = 0:(length(S)-1)

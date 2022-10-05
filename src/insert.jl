@@ -19,9 +19,8 @@ insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
 # Best insertion
 # Iteratively insert randomly selected node at its best position until all open nodes have been added to the solution
-function bestinsert!(rng::AbstractRNG, s::Solution; noise=false)
+function bestinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
     N = s.N
-    ϕⁿ= noise
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
@@ -42,7 +41,7 @@ function bestinsert!(rng::AbstractRNG, s::Solution; noise=false)
                 # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + ϕⁿ * rand(rng, Uniform(-0.2, 0.2)))
+                z⁺ = f(s) * (1 + ϕ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
@@ -68,14 +67,13 @@ function bestinsert!(rng::AbstractRNG, s::Solution; noise=false)
     end
     return s
 end
-bestprecise!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s; noise=false)
-bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s; noise=true)
+bestprecise!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, false)
+bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, true)
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedyinsert!(rng::AbstractRNG, s::Solution; noise=false)
+function greedyinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
     N = s.N
-    ϕⁿ= noise
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
@@ -96,7 +94,7 @@ function greedyinsert!(rng::AbstractRNG, s::Solution; noise=false)
                 # Step 2.1.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + ϕⁿ * rand(rng, Uniform(-0.2, 0.2)))
+                z⁺ = f(s) * (1 + ϕ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
@@ -121,8 +119,8 @@ function greedyinsert!(rng::AbstractRNG, s::Solution; noise=false)
     end
     return s
 end
-greedyprecise!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s; noise=false)
-greedyperturb!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s; noise=true)
+greedyprecise!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s, false)
+greedyperturb!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s, true)
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
