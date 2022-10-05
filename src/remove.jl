@@ -22,15 +22,15 @@ function randomnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     d = N[1]
-    w = [if isequal(n, d) 0 else 1 end for n ∈ N]   # w[i]: selection weight of node N[i]
+    W = [if isequal(n, d) 0 else 1 end for n ∈ N]   # W[i]: selection weight of node N[i]
     # Step 1: Randomly select customer nodes to remove until q nodes have been removed
     for _ ∈ 1:q
-        i  = sample(rng, 1:I, Weights(w))
+        i  = sample(rng, 1:I, Weights(W))
         nₒ = N[i]
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
         removenode!(nₒ, nₜ, nₕ, s)
-        w[i] = 0
+        W[i] = 0
     end
     # Step 2: Return solution
     return s
@@ -45,19 +45,19 @@ function relatednode!(rng::AbstractRNG, q::Int64, s::Solution)
     # Step 1: Randomly select a pivot customer node
     j = rand(rng, 2:I)
     # Step 2: For each customer node, evaluate relatedness to this pivot customer node
-    x = fill(-Inf, I)                               # x[i]: relatedness of node N[i] with node N[j]
+    X = fill(-Inf, I)                               # X[i]: relatedness of node N[i] with node N[j]
     for i ∈ 2:I
         a = A[(i,j)]
-        x[i] = 1/a.c
+        X[i] = 1/a.c
     end
     # Step 3: Remove q most related customer nodes
     for _ ∈ 1:q
-        i  = argmax(x)
+        i  = argmax(X)
         nₒ = N[i]
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
         removenode!(nₒ, nₜ, nₕ, s)
-        x[i] = -Inf
+        X[i] = -Inf
     end
     # Step 4: Return solution
     return s
@@ -69,7 +69,7 @@ function worstnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = length(N)
     # Step 1: Iterate until q nodes have been removed
-    x = fill(-Inf, I)                               # x[i]: removal cost of node N[i]
+    X = fill(-Inf, I)                               # X[i]: removal cost of node N[i]
     for _ ∈ 1:q
         # Step 1.1: For every closed node evaluate removal cost
         z = f(s)
@@ -82,18 +82,18 @@ function worstnode!(rng::AbstractRNG, q::Int64, s::Solution)
             removenode!(nₒ, nₜ, nₕ, s)
             # Step 1.1.2: Evaluate the removal cost
             z⁻ = f(s) * (1 + rand(rng, Uniform(-0.2, 0.2)))
-            x[i] = z - z⁻
+            X[i] = z - z⁻
             # Step 1.1.3: Re-insert node nₒ between tail node nₜ and head node nₕ
             insertnode!(nₒ, nₜ, nₕ, s)
         end
         # Step 1.2: Remove the node with highest removal cost
-        i  = argmax(x)
+        i  = argmax(X)
         nₒ = N[i]
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
         removenode!(nₒ, nₜ, nₕ, s)
         # Step 1.3: Update cost vector
-        x[i] = -Inf
+        X[i] = -Inf
     end
     # Step 2: Return solution
     return s

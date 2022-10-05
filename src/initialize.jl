@@ -24,7 +24,7 @@ function cw(rng::AbstractRNG, instance)
     D = [deepcopy(d) for _ ∈ 1:K]
     for k ∈ K:-1:1 insertnode!(N[k], D[k], D[k], s) end
     # Step 2: Merge routes iteratively until single route traversing all nodes remains
-    x = fill(-Inf, (K,K))       # x[i,j]: Savings from merging route with tail node N[i] into route with tail node N[j]
+    X = fill(-Inf, (K,K))       # X[i,j]: Savings from merging route with tail node N[i] into route with tail node N[j]
     ϕ = ones(Int64, K)          # ϕ[k]  : if isone(ϕ[k]) implies route k is active else inactive
     for _ ∈ 3:K
         # Step 2.1: Iterate through every route-pair combination
@@ -54,7 +54,7 @@ function cw(rng::AbstractRNG, instance)
                 # Step 2.1.2: Compute savings from merging route with tail node N[i] into route with tail node N[j]
                 z⁻ = f(s)
                 Δ  = z - z⁻
-                x[i,j] = Δ
+                X[i,j] = Δ
                 # Step 2.1.3: Unmerge routes with tail node N[i] into route with tail node N[j]
                 nₜ = d₁
                 nₒ = N[n₂.h]
@@ -70,7 +70,7 @@ function cw(rng::AbstractRNG, instance)
             end
         end
         # Step 2.2: Merge routes that render highest savings
-        i,j = Tuple(argmax(x))
+        i,j = Tuple(argmax(X))
         n₁ = N[i]
         d₁ = D[i]
         n₂ = N[j]
@@ -88,10 +88,10 @@ function cw(rng::AbstractRNG, instance)
         end
         D[i] = D[j]
         # Step 2.3: Revise savings and selection vectors appropriately
-        x[i, :] .= -Inf
-        x[:, i] .= -Inf
-        x[j, :] .= -Inf
-        x[:, j] .= -Inf
+        X[i, :] .= -Inf
+        X[:, i] .= -Inf
+        X[j, :] .= -Inf
+        X[:, j] .= -Inf
         for k ∈ 1:K ϕ[k] = isequal(k, i) ? 1 : 0 end
     end
     for n ∈ N d.t = isequal(n.h, d.i) ? n.i : d.t end

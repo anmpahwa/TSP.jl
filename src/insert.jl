@@ -19,7 +19,7 @@ insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
 # Best insertion
 # Iteratively insert randomly selected node at its best position until all open nodes have been added to the solution
-function bestinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
+function bestinsert!(rng::AbstractRNG, s::Solution, φ::Bool)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -41,7 +41,7 @@ function bestinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
                 # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + ϕ * rand(rng, Uniform(-0.2, 0.2)))
+                z⁺ = f(s) * (1 + φ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
@@ -72,7 +72,7 @@ bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, true)
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedyinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
+function greedyinsert!(rng::AbstractRNG, s::Solution, φ::Bool)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
@@ -94,7 +94,7 @@ function greedyinsert!(rng::AbstractRNG, s::Solution, ϕ::Bool)
                 # Step 2.1.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + ϕ * rand(rng, Uniform(-0.2, 0.2)))
+                z⁺ = f(s) * (1 + φ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
