@@ -81,7 +81,7 @@ function worst!(rng::AbstractRNG, q::Int64, s::Solution)
             nₕ = N[nₒ.h]
             removenode!(nₒ, nₜ, nₕ, s)
             # Step 1.1.2: Evaluate the removal cost
-            z⁻ = f(s)
+            z⁻ = f(s) * (1 + rand(rng, Uniform(-0.2, 0.2)))
             x[i] = z - z⁻
             # Step 1.1.3: Re-insert node nₒ between tail node nₜ and head node nₕ
             insertnode!(nₒ, nₜ, nₕ, s)

@@ -2,6 +2,7 @@ module TSP
 
 using CSV
 using DataFrames
+using Distributions
 using Plots
 using ProgressMeter
 using Random

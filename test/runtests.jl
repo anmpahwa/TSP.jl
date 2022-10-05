@@ -17,9 +17,11 @@ using Random
                     :worst!   
                 ]                       , 
         Ψᵢ  =   [
-                    :best!      ,
-                    :greedy!    ,
-                    :regret2!   ,
+                    :bestprecise!   ,
+                    :bestperturb!   ,
+                    :greedyprecise! ,
+                    :greedyperturb! ,
+                    :regret2!       ,
                     :regret3!
                 ]                       ,
         Ψₗ  =   [

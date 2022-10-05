@@ -4,9 +4,12 @@
 Return solution inserting open nodes to the solution `s` using the given `method`.
 
 Available methods include,
-- Best Insertion    : `:best!`
-- Greedy Insertion  : `:greedy!`
-- Regret Insertion  : `:regret2!`, `:regret3!`
+- Precise Best Insertion    : `:bestprecise!`
+- Perturb Best Insertion    : `:bestperturb!`
+- Precise Greedy Insertion  : `:greedyprecise!`
+- Perturb Greedy Insertion  : `:greedyperturb!`
+- Regret-two Insertion      : `:regret2!`
+- Regret-three Insertion    : `:regret3!`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
@@ -16,15 +19,16 @@ insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
 # Best insertion
 # Iteratively insert randomly selected node at its best position until all open nodes have been added to the solution
-function best!(rng::AbstractRNG, s::Solution)
+function bestinsert!(rng::AbstractRNG, s::Solution; noise=false)
     N = s.N
+    ϕⁿ= noise
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
     I = length(L)
-    p = fill((0, 0), I)         # p[i]: best insertion postion of node L[i]
-    x = fill(Inf, I)            # x[i]: insertion cost of node L[i] at best position
-    w = ones(Int64, I)          # w[i]: selection weight for node L[i]
+    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
+    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
+    W = ones(Int64, I)          # W[i]: selection weight for node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ 1:I
         # Step 2.1: Iterate through all open nodes and every possible insertion position
@@ -38,10 +42,10 @@ function best!(rng::AbstractRNG, s::Solution)
                 # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.2: Compute the insertion cost
-                z⁺ = f(s)
+                z⁺ = f(s) * (1 + ϕⁿ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
-                if Δ < x[i] x[i], p[i] = Δ, (nₜ.i, nₕ.i) end
+                if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.4: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
                 if isequal(nₕ, d) break end
@@ -50,31 +54,34 @@ function best!(rng::AbstractRNG, s::Solution)
             end
         end
         # Step 2.2: Randomly select a node to insert at its best position
-        i = sample(rng, 1:I, Weights(w))
+        i = sample(rng, 1:I, Weights(W))
         nₒ = L[i]
-        t  = p[i][1]
-        h  = p[i][2]
+        t  = P[i][1]
+        h  = P[i][2]
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        p .= ((0, 0), )
-        x .= Inf
-        w[i] = 0
+        P .= ((0, 0), )
+        X .= Inf
+        W[i] = 0
     end
     return s
 end
+bestprecise!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s; noise=false)
+bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s; noise=true)
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedy!(rng::AbstractRNG, s::Solution)
+function greedyinsert!(rng::AbstractRNG, s::Solution; noise=false)
     N = s.N
+    ϕⁿ= noise
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
     I = length(L)
-    p = fill((0, 0), I)         # p[i]: best insertion postion of node L[i]
-    x = fill(Inf, I)            # x[i]: insertion cost of node L[i] at best position
+    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
+    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ 1:I
         # Step 2.1: Iterate through all open nodes
@@ -89,10 +96,10 @@ function greedy!(rng::AbstractRNG, s::Solution)
                 # Step 2.1.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.1.2: Compute the insertion cost
-                z⁺ = f(s)
+                z⁺ = f(s) * (1 + ϕⁿ * rand(rng, Uniform(-0.2, 0.2)))
                 Δ  = z⁺ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
-                if Δ < x[i] x[i], p[i] = Δ, (nₜ.i, nₕ.i) end
+                if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
                 if isequal(nₕ, d) break end
@@ -101,32 +108,34 @@ function greedy!(rng::AbstractRNG, s::Solution)
             end
         end
         # Step 2.2: Insert node with least insertion cost at its best position
-        i  = argmin(x)
+        i  = argmin(X)
         nₒ = L[i]
-        t  = p[i][1]
-        h  = p[i][2]
+        t  = P[i][1]
+        h  = P[i][2]
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        p .= ((0, 0), )
-        x .= Inf
+        P .= ((0, 0), )
+        X .= Inf
     end
     return s
 end
+greedyprecise!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s; noise=false)
+greedyperturb!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s; noise=true)
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretK!(rng::AbstractRNG, K::Int64, s::Solution)
+function regretKinsert!(rng::AbstractRNG, K::Int64, s::Solution)
     N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
     I = length(L)
-    p = fill((0, 0), I)         # p[i]  : best insertion postion of node L[i]
-    x = fill(Inf, I)            # x[i]  : insertion cost of node L[i] at best position
-    y = fill(Inf, (K,I))        # y[k,i]: insertion cost of node L[i] at kᵗʰ best position
-    r = fill(-Inf, I)           # r[i]  : regret-K cost of node L[i]
+    P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
+    X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
+    Y = fill(Inf, (K,I))        # Y[k,i]: insertion cost of node L[i] at kᵗʰ best position
+    R = fill(-Inf, I)           # R[i]  : regret-K cost of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ 1:I
         # Step 2.1: Iterate through all open nodes
@@ -144,14 +153,14 @@ function regretK!(rng::AbstractRNG, K::Int64, s::Solution)
                 z⁺ = f(s)
                 Δ  = z⁺ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
-                if Δ < x[i] x[i], p[i] = Δ, (nₜ.i, nₕ.i) end
+                if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Revise K least insertion costs
                 k̲ = 1
                 for k ∈ 1:K
                     k̲ = k
-                    if Δ < y[k,i] break end
+                    if Δ < Y[k,i] break end
                 end
-                for k ∈ K:-1:k̲ y[k,i] = isequal(k, k̲) ? Δ : y[k-1,i]::Float64 end
+                for k ∈ K:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i]::Float64 end
                 # Step 2.1.1.5: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
                 if isequal(nₕ, d) break end
@@ -159,26 +168,26 @@ function regretK!(rng::AbstractRNG, K::Int64, s::Solution)
                 nₕ = N[nₜ.h]
             end
             # Step 2.1.2: Compute regret cost for node L[i]
-            r[i] = 0.
-            for k ∈ 1:K r[i] += y[k,i] - y[1,i] end
+            R[i] = 0.
+            for k ∈ 1:K R[i] += Y[k,i] - Y[1,i] end
         end
         # Step 2.2: Insert node with highest regret cost at its best position (break ties by inserting the node with the lowest insertion cost)
-        I̲  = findall(i -> i == maximum(r), r)
-        i  = I̲[argmin(x[I̲])]
+        I̲  = findall(i -> i == maximum(R), R)
+        i  = I̲[argmin(X[I̲])]
         nₒ = L[i]
-        t  = p[i][1]
-        h  = p[i][2]
+        t  = P[i][1]
+        h  = P[i][2]
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        p .= ((0, 0), )
-        x .= Inf
-        y[:,:] .= Inf
-        r .= -Inf
+        P .= ((0, 0), )
+        X .= Inf
+        Y[:,:] .= Inf
+        R .= -Inf
     end
     # Step 3: Return initial solution
     return s
 end
-regret2!(rng::AbstractRNG, s::Solution) = regretK!(rng, Int64(2), s)
-regret3!(rng::AbstractRNG, s::Solution) = regretK!(rng, Int64(3), s)
+regret2!(rng::AbstractRNG, s::Solution) = regretKinsert!(rng, Int64(2), s)
+regret3!(rng::AbstractRNG, s::Solution) = regretKinsert!(rng, Int64(3), s)
