@@ -23,13 +23,13 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     N = s.N
     # Step 1: Initialize
     I = length(N)
-    p = (0, 0)                  # p   : best insertion postion
-    x = Inf                     # x   : insertion cost at best position
-    w = ones(Int64, I)          # w[i]: selection weight for node N[i]
+    P = (0, 0)                  # P   : best insertion postion
+    X = Inf                     # X   : insertion cost at best position
+    W = ones(Int64, I)          # W[i]: selection weight for node N[i]
     # Step 2: Iterate for k̅ iterations until improvement
     for _ ∈ 1:k̅
         # Step 2.1: Randomly select a node
-        i  = sample(rng, 1:I, Weights(w))
+        i  = sample(rng, 1:I, Weights(W))
         nₒ = N[i]
         # Step 2.2: Remove this node from its position between tail node nₜ and head node nₕ
         nₜ = N[nₒ.t]
@@ -46,7 +46,7 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
             z′ = f(s)
             Δ  = z′ - z
             # Step 2.3.3: Revise least insertion cost and the corresponding best insertion position
-            if Δ < x x, p = Δ, (nₜ.i, nₕ.i) end
+            if Δ < X X, P = Δ, (nₜ.i, nₕ.i) end
             # Step 2.3.4: Remove node from its position between tail node nₜ and head node nₕ
             removenode!(nₒ, nₜ, nₕ, s)
             if isequal((nₜ.i, nₕ.i), pₒ) break end
@@ -54,16 +54,16 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
             nₕ = N[nₜ.h]
         end
         # Step 2.4: Move the node to its best position (this could be its original position as well)
-        Δ  = x
-        t  = p[1]
-        h  = p[2]
+        Δ  = X
+        t  = P[1]
+        h  = P[2]
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.5: Revise vectors appropriately
-        p = (0, 0)
-        x = Inf
-        w[i] = 0
+        P = (0, 0)
+        X = Inf
+        W[i] = 0
         # Step 2.6: If the move results in reduction in objective function value, then go to step 3, else return to step 2.1
         Δ ≥ 0 ? continue : break
     end
@@ -90,13 +90,13 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
         if isequal(n₂, n₅) || isequal(n₁, n₅) continue end 
         q  = n₆
         nₒ = n₂
-        p  = n₃
+        P  = n₃
         while true
-            removenode!(nₒ, n₁, p, s)
+            removenode!(nₒ, n₁, P, s)
             insertnode!(nₒ, n₅, q, s)
             q  = nₒ
-            nₒ = p
-            p  = N[p.h]
+            nₒ = P
+            P  = N[P.h]
             if isequal(nₒ, n₅) break end
         end
         # Step 1.2: Compute change in objective function value
@@ -107,13 +107,13 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
         # Step 1.4: Reconfigure the two arcs to original state and go to step 1.1
         q  = n₆
         nₒ = n₅
-        p  = n₄
+        P  = n₄
         while true
-            removenode!(nₒ, n₁, p, s)
+            removenode!(nₒ, n₁, P, s)
             insertnode!(nₒ, n₂, q, s)
             q  = nₒ
-            nₒ = p
-            p  = N[p.h]
+            nₒ = P
+            P  = N[P.h]
             if isequal(nₒ, n₂) break end
         end
     end
