@@ -35,9 +35,9 @@ and an initial solution developed using one of the following methods,
 - Random Initialization                 : `:random`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
-- Random Removal    : `:random!`
-- Rekated Removal   : `:related!`
-- Worst Removal     : `:worst!`
+- Random Node Removal    : `:randomnode!`
+- Related Node Removal   : `:relatednode!`
+- Worst Node Removal     : `:worstnode!`
 
 and consequently inserts removed nodes using,
 - Precise Best Insertion    : `:bestprecise!`
