@@ -54,15 +54,15 @@ Returns true if node service constraint, node flow constraint, and
 sub-tour elimination constraint are not violated.
 """
 function isfeasible(s::Solution) 
-    N = s.N
-    x  = zeros(Int64, length(N))
+    N  = s.N
+    X  = zeros(Int64, length(N))
     nₒ = N[1]
     while true
         k = nₒ.i
-        if isone(x[k]) break end
-        x[k] = 1
+        if isone(X[k]) break end
+        X[k] = 1
         nₒ = N[nₒ.h]
     end
-    if any(iszero, x) return false end
+    if any(iszero, X) return false end
     return true
 end
