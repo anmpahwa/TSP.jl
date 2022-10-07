@@ -4,7 +4,7 @@ using Test
 using Random
 
 @testset "TSP.jl" begin
-    instances = ["d198", "a280"]
+    instances = ["att48", "a280"]
     methods   = [:random, :cw]
     χ   = ALNSParameters(
         k̲   =   1                       ,
@@ -29,18 +29,18 @@ using Random
                     :opt!       ,
                     :swap!
                 ]                       ,
-        σ₁  =   33                      ,
-        σ₂  =   9                       ,
-        σ₃  =   13                      ,
+        σ₁  =   15                      ,
+        σ₂  =   10                      ,
+        σ₃  =   3                       ,
         ω   =   0.05                    ,
         τ   =   0.5                     ,
-        𝜃   =   0.99975                 ,
-        C̲   =   30                      ,
+        𝜃   =   0.9975                  ,
+        C̲   =   4                       ,
         C̅   =   60                      ,
         μ̲   =   0.1                     ,
         μ̅   =   0.4                     ,
         ρ   =   0.1                     ,
-    )
+    );
     for k ∈ 1:2
         instance = instances[k]
         method   = methods[k]
