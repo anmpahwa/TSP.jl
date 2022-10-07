@@ -9,7 +9,7 @@ let
     # Visualize instance
     display(visualize(instance))
     # Define a random number generator
-    rng = MersenneTwister(1234);
+    rng = MersenneTwister(1104);
     # Define inital solution method and build the initial solution
     sₒ = initialsolution(rng, instance, :random);
     # Define ALNS parameters
@@ -43,7 +43,7 @@ let
         σ₃  =   3                       ,
         ω   =   0.05                    ,
         τ   =   0.5                     ,
-        𝜃   =   0.99975                 ,
+        𝜃   =   0.9975                  ,
         C̲   =   4                       ,
         C̅   =   60                      ,
         μ̲   =   0.1                     ,
@@ -62,8 +62,8 @@ let
     # Visualize best solution   
     display(visualize(s⃰))
     # Animate ALNS solution search process from inital to best solution
-    display(animate(S))
+    #display(animate(S))
     # Show convergence plot
-    display(pltcnv(S))
+    #display(pltcnv(S))
     return
 end
