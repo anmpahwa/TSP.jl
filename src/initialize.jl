@@ -1,5 +1,5 @@
 """
-    initialsolution([rng], instance, method)
+    initialsolution([rng], G, method)
 
 Returns initial TSP solution using the given `method` for graph `G` given as a tuple of `Nodes` and `Arcs`.
 Available methods include,
