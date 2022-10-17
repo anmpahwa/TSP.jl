@@ -1,6 +1,6 @@
 # Builds instance as graph with set of nodes and arcs.
-function build(instance)
-    f = joinpath(dirname(@__DIR__), "$instances/$instance.csv")
+function build(instance; root=joinpath(dirname(@__DIR__), "instances"))
+    f = joinpath(root, "$instance.csv")
     csv = CSV.File(f, types=[Int64, Float64, Float64])
     df = DataFrame(csv)
     K = nrow(df)
