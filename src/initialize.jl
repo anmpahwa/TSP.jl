@@ -9,8 +9,8 @@ Available methods include,
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).
 """
-initialsolution(rng::AbstractRNG, instance, method::Symbol)::Solution = getfield(TSP, method)(rng, instance)
-initialsolution(instance, method::Symbol) = initialsolution(Random.GLOBAL_RNG, instance, method)
+initialsolution(rng::AbstractRNG, G, method::Symbol)::Solution = getfield(TSP, method)(rng, G)
+initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, method)
 
 # Clarke and Wright Savings Algorithm
 # Create initial solution by merging routes that render the most savings until single route traversing all nodes remains
