@@ -19,8 +19,8 @@ include("localsearch.jl")
 include("ALNS.jl")
 include("visualize.jl")
 
-export  f, isfeasible, 
-        ALNSParameters, initialsolution, ALNS,
+export  build, initialsolution, f, isfeasible,
+        ALNSParameters, ALNS, 
         vectorize, visualize, animate, pltcnv
         
 end

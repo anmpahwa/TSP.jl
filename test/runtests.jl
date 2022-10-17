@@ -45,7 +45,8 @@ using Random
         instance = instances[k]
         method   = methods[k]
         println("\n Solving $instance")
-        sₒ = initialsolution(instance, method)     
+        G  = build(instance)
+        sₒ = initialsolution(G, method)     
         S  = ALNS(χ, sₒ)
         s⃰  = S[end]
         @test isfeasible(sₒ)
