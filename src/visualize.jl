@@ -1,12 +1,12 @@
 """
-    visualize(instance; backend=gr)
+    visualize(instance; root=joinpath(dirname(@__DIR__), "instances"), backend=gr)
 
 Plots `instance`.
 Uses given `backend` to plot (defaults to `gr`).
 """
-function visualize(instance; backend=gr)
+function visualize(instance; root=joinpath(dirname(@__DIR__), "instances"), backend=gr)
     backend()
-    G = build(instance)
+    G = build(instance; root=root)
     N, _ = G
     fig = plot(legend=:none)
     I = eachindex(N)
