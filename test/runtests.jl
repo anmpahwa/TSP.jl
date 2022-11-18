@@ -7,10 +7,10 @@ using Random
     instances = ["att48", "a280"]
     methods   = [:random, :cw]
     χ   = ALNSParameters(
-        k̲   =   1                       ,
-        l̲   =   50                      ,
-        l̅   =   125                     ,
-        k̅   =   250                     ,
+        n   =   4                       ,
+        k   =   250                     ,
+        m   =   200                     ,
+        j   =   125                     ,
         Ψᵣ  =   [
                     :randomnode!    , 
                     :relatednode!   ,
