@@ -1,7 +1,6 @@
 using TSP
 using Revise
 using Test
-using Random
 
 @testset "TSP.jl" begin
     instances = ["att48", "a280"]
@@ -45,10 +44,14 @@ using Random
         instance = instances[k]
         method   = methods[k]
         println("\n Solving $instance")
+        visualize(instance)
         G  = build(instance)
         sₒ = initialsolution(G, method)     
         S  = ALNS(χ, sₒ)
         s⃰  = S[end]
+        visualize(s⃰)
+        animate(S)
+        pltcnv(S)
         @test isfeasible(sₒ)
         @test isfeasible(s⃰)
         @test f(s⃰) ≤ f(sₒ)
