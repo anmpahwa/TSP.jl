@@ -1,5 +1,5 @@
 @doc """
-    ALNSparameters
+    ALNSParameters
 
 Optimization parameters for Adaptive Large Neighborhood Search (ALNS).
 
