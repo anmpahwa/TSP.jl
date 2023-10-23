@@ -8,14 +8,17 @@ using ProgressMeter
 using Random
 using StatsBase
 
-include("parameters.jl")
 include("datastructure.jl")
+include("helper.jl")
 include("instance.jl")
+include("objfunction.jl")
+include("feasible.jl")
 include("initialize.jl")
 include("operations.jl")
 include("remove.jl")
 include("insert.jl")
 include("localsearch.jl")
+include("parameters.jl")
 include("ALNS.jl")
 include("visualize.jl")
 

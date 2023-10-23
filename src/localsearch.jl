@@ -22,14 +22,14 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
     N = s.N
     # Step 1: Initialize
-    I = length(N)
-    P = (0, 0)                  # P   : best insertion postion
+    I = eachindex(N)
+    W = ones(Int64, I)          # W[i]: sampling weight for node N[i]
     X = Inf                     # X   : insertion cost at best position
-    W = ones(Int64, I)          # W[i]: selection weight for node N[i]
+    P = (0, 0)                  # P   : best insertion postion
     # Step 2: Iterate for k̅ iterations until improvement
     for _ ∈ 1:k̅
         # Step 2.1: Randomly select a node
-        i  = sample(rng, 1:I, Weights(W))
+        i  = sample(rng, I, Weights(W))
         nₒ = N[i]
         # Step 2.2: Remove this node from its position between tail node nₜ and head node nₕ
         nₜ = N[nₒ.t]
@@ -61,9 +61,9 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.5: Revise vectors appropriately
-        P = (0, 0)
-        X = Inf
         W[i] = 0
+        X = Inf
+        P = (0, 0)
         # Step 2.6: If the move results in reduction in objective function value, then go to step 3, else return to step 2.1
         Δ ≥ 0 ? continue : break
     end

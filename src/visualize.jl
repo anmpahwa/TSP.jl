@@ -10,18 +10,19 @@ function visualize(instance; root=joinpath(dirname(@__DIR__), "instances"), back
     N, _ = G
     fig = plot(legend=:none)
     I = eachindex(N)
+    W = fill("color",  I)
     X = zeros(Float64, I)
     Y = zeros(Float64, I)
-    W = fill("color", I)
     for i ∈ I
         n = N[i]
+        W[i] = "LightBlue"
         X[i] = n.x
         Y[i] = n.y
-        W[i] = "LightBlue"
     end
     scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
     return fig
 end
+
 """
     visualize(s::Solution; backend=gr)
 
@@ -34,62 +35,38 @@ function visualize(s::Solution; backend=gr)
     fig = plot(legend=:none)
     # Closed nodes
     V = vectorize(s)
-    Z = V
-    K = length(Z)
+    K = length(V)
+    W = fill("color",  K)
     X = zeros(Float64, K)
     Y = zeros(Float64, K)
-    W = fill("color", K)
     for k ∈ 1:K
-        i = Z[k]
+        i = V[k]
         n = N[i]
+        W[k] = "DarkBlue"
         X[k] = n.x
         Y[k] = n.y
-        W[k] = "DarkBlue"
     end
     scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
     plot!(X, Y, color="SteelBlue")
     # Open nodes
-    L  = [n.i for n ∈ N if isopen(n)]
-    Z′ = L
-    K′ = length(Z′)
-    X′ = zeros(Float64, K′)
-    Y′ = zeros(Float64, K′)
-    W′ = fill("color", K′)
-    for k ∈ 1:K′
-        i = Z′[k]
+    V = [n.i for n ∈ N if isopen(n)]
+    K = length(V)
+    W = fill("color",  K)
+    X = zeros(Float64, K)
+    Y = zeros(Float64, K)
+    for k ∈ 1:K
+        i = V[k]
         n = N[i]
-        X′[k] = n.x
-        Y′[k] = n.y
-        W′[k] = "LightBlue"
+        W[k] = "LightBlue"
+        X[k] = n.x
+        Y[k] = n.y
     end
-    scatter!(X′, Y′, markersize=4, markerstrokewidth=0, color=W′)
+    scatter!(X, Y, markersize=4, markerstrokewidth=0, color=W)
     # Annotation
     x = minimum(getproperty.(N, :x))
     y = maximum(getproperty.(N, :y))
     annotate!(x, y, text("f(s): $(Int64(round(f(s))))", :left, 10))
     return fig
-end
-
-"""
-    vectorize(s::Solution)
-
-Returns solution as a sequence of nodes in the order of visits.
-"""
-function vectorize(s::Solution)
-    N = s.N
-    d = N[1]
-    V = Int64[]
-    if isopen(d) return V end
-    nₜ = d
-    nₕ = N[nₜ.h]
-    push!(V, d.i)
-    while true
-        push!(V, nₕ.i)
-        if isequal(nₕ, d) break end
-        nₜ = nₕ
-        nₕ = N[nₜ.h]
-    end
-    return V
 end
 
 """
@@ -100,7 +77,7 @@ Iteratively plots solutions in `S` to develop a gif at given `fps`.
 function animate(S::Vector{Solution}; fps=10)
     K = 0:(length(S)-1)
     figs = Vector(undef, length(S))
-    for (k, s) ∈ enumerate(S)
+    for (k,s) ∈ pairs(S)
         fig = visualize(s, backend=gr)
         plot!(title="Iteration #$(K[k])", titlefontsize=11)
         figs[k] = fig

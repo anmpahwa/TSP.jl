@@ -16,23 +16,24 @@ initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, metho
 # Create initial solution by merging routes that render the most savings until single route traversing all nodes remains
 function cw(rng::AbstractRNG, G)
     N, A = G
-    s = Solution(N, A)
     d = N[1]
+    s = Solution(N, A)
     # Step 1: Initialize solution with routes to every node from the depot node (first node)
-    K = length(N)
-    D = [deepcopy(d) for _ ∈ 1:K]
-    for k ∈ K:-1:1 insertnode!(N[k], D[k], D[k], s) end
+    k = length(N)
+    K = eachindex(N)
+    D = [deepcopy(d) for _ ∈ K]
+    for k ∈ reverse(K) insertnode!(N[k], D[k], D[k], s) end
     # Step 2: Merge routes iteratively until single route traversing all nodes remains
     X = fill(-Inf, (K,K))       # X[i,j]: Savings from merging route with tail node N[i] into route with tail node N[j]
-    ϕ = ones(Int64, K)          # ϕ[k]  : if isone(ϕ[k]) implies route k is active else inactive
-    for _ ∈ 3:K
+    ϕ = ones(Int64, K)          # ϕ[k]  : binary weight for route k
+    for _ ∈ 3:k
         # Step 2.1: Iterate through every route-pair combination
         z = f(s)
-        for i ∈ 2:K
+        for i ∈ 2:k
             n₁ = N[i]
             d₁ = D[i]
             if !isequal(n₁.h, d₁.i) continue end
-            for j ∈ 2:K
+            for j ∈ 2:k
                 # Step 2.1.1: Merge routes with tail node N[i] into route with tail node N[j]
                 n₂ = N[j]
                 d₂ = D[j]
@@ -91,7 +92,7 @@ function cw(rng::AbstractRNG, G)
         X[:, i] .= -Inf
         X[j, :] .= -Inf
         X[:, j] .= -Inf
-        for k ∈ 1:K ϕ[k] = isequal(k, i) ? 1 : 0 end
+        ϕ .= isequal.(K, i)
     end
     for n ∈ N d.t = isequal(n.h, d.i) ? n.i : d.t end
     for n ∈ N d.h = isequal(n.t, d.i) ? n.i : d.h end

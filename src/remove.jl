@@ -20,12 +20,11 @@ remove!(q::Int64, s::Solution, method::Symbol) = remove!(Random.GLOBAL_RNG, q, s
 # Randomly select q nodes to remove
 function randomnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
-    I = length(N)
-    d = N[1]
-    W = [if isequal(n, d) 0 else 1 end for n ∈ N]   # W[i]: selection weight of node N[i]
+    I = eachindex(N)
+    W = (!isone).(I)            # W[i]: sampling weight of node N[i]
     # Step 1: Randomly select customer nodes to remove until q nodes have been removed
     for _ ∈ 1:q
-        i  = sample(rng, 1:I, Weights(W))
+        i  = sample(rng, I, Weights(W))
         nₒ = N[i]
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
@@ -41,12 +40,14 @@ end
 function relatednode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     A = s.A
-    I = length(N)-1
+    I = eachindex(N)
+    W = (!isone).(I)            # W[i]: sampling weight of node N[i]
+    X = fill(-Inf, I)           # X[i]: relatedness of node N[i] with node N[j]
     # Step 1: Randomly select a pivot customer node
-    j = rand(rng, 2:I)
+    j = sample(rng, I, Weights(W))
     # Step 2: For each customer node, evaluate relatedness to this pivot customer node
-    X = fill(-Inf, I)                               # X[i]: relatedness of node N[i] with node N[j]
-    for i ∈ 2:I
+    for i ∈ I
+        if isone(i) continue end
         a = A[(i,j)]
         X[i] = 1/a.c
     end
@@ -67,14 +68,14 @@ end
 # Remove q nodes with highest removal cost
 function worstnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
-    I = length(N)
+    I = eachindex(N)
+    X = fill(-Inf, I)           # X[i]: removal cost of node N[i]
     # Step 1: Iterate until q nodes have been removed
-    X = fill(-Inf, I)                               # X[i]: removal cost of node N[i]
     for _ ∈ 1:q
         # Step 1.1: For every closed node evaluate removal cost
         z = f(s)
-        for i ∈ 2:I
-            nₒ = N[i]
+        for (i,nₒ) ∈ pairs(N)
+            if isone(i) continue end
             if isopen(nₒ) continue end
             # Step 1.1.1: Remove closed node nₒ between tail node nₜ and head node nₕ
             nₜ = N[nₒ.t]

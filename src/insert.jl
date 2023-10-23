@@ -22,19 +22,18 @@ insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
     N = s.N
     d = N[1]
-    L = [n for n ∈ N if isopen(n)]
-    # Step 1: Initialize
-    I = length(L)
-    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
-    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
-    W = ones(Int64, I)          # W[i]: selection weight for node L[i]
     φ = isequal(mode, :perturb)
+    # Step 1: Initialize
+    L = [n for n ∈ N if isopen(n)]
+    I = eachindex(L)
+    W = ones(Int64, I)          # W[i]: sampling weight for node L[i]
+    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
+    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
-    for _ ∈ 1:I
+    for _ ∈ I
         # Step 2.1: Iterate through all open nodes and every possible insertion position
         z = f(s)
-        for i ∈ 1:I
-            nₒ = L[i]
+        for (i,nₒ) ∈ pairs(L)
             if isclose(nₒ) continue end
             nₜ = d
             nₕ = N[nₜ.h]
@@ -54,7 +53,7 @@ function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
             end
         end
         # Step 2.2: Randomly select a node to insert at its best position
-        i = sample(rng, 1:I, Weights(W))
+        i = sample(rng, I, Weights(W))
         nₒ = L[i]
         t  = P[i][1]
         h  = P[i][2]
@@ -62,9 +61,9 @@ function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        P .= ((0, 0), )
-        X .= Inf
         W[i] = 0
+        X .= Inf
+        P .= ((0, 0), )
     end
     return s
 end
@@ -76,19 +75,18 @@ bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, :perturb)
 function greedyinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
     N = s.N
     d = N[1]
-    L = [n for n ∈ N if isopen(n)]
-    # Step 1: Initialize
-    I = length(L)
-    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
-    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
     φ = isequal(mode, :perturb)
+    # Step 1: Initialize
+    L = [n for n ∈ N if isopen(n)]
+    I = eachindex(L)
+    X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
+    P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
-    for _ ∈ 1:I
+    for _ ∈ I
         # Step 2.1: Iterate through all open nodes
         z = f(s)
-        for i ∈ 1:I
+        for (i,nₒ) ∈ pairs(L)
             # Step 2.1.1: For open node L[i] compute insertion cost for every possible insertion position
-            nₒ = L[i]
             if isclose(nₒ) continue end
             nₜ = d
             nₕ = N[nₜ.h]
@@ -116,8 +114,8 @@ function greedyinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        P .= ((0, 0), )
         X .= Inf
+        P .= ((0, 0), )
     end
     return s
 end
@@ -129,20 +127,19 @@ greedyperturb!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s, :perturb)
 function regretKinsert!(rng::AbstractRNG, s::Solution, K::Int64)
     N = s.N
     d = N[1]
-    L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
-    I = length(L)
-    P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
+    L = [n for n ∈ N if isopen(n)]
+    I = eachindex(L)
     X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
+    P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
     Y = fill(Inf, (K,I))        # Y[k,i]: insertion cost of node L[i] at kᵗʰ best position
     R = fill(-Inf, I)           # R[i]  : regret-K cost of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
-    for _ ∈ 1:I
+    for _ ∈ I
         # Step 2.1: Iterate through all open nodes
         z = f(s)
-        for i ∈ 1:I
+        for (i,nₒ) ∈ pairs(L)
             # Step 2.1.1: For node L[i] compute insertion cost for every possible insertion position
-            nₒ = L[i]
             if isclose(nₒ) continue end
             nₜ = d
             nₕ = N[nₜ.h]
@@ -181,8 +178,8 @@ function regretKinsert!(rng::AbstractRNG, s::Solution, K::Int64)
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
-        P .= ((0, 0), )
         X .= Inf
+        P .= ((0, 0), )
         Y[:,:] .= Inf
         R .= -Inf
     end
