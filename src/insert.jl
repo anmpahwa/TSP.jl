@@ -74,6 +74,7 @@ bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, :perturb)
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
 function greedyinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
+    N = s.N
     d = N[1]
     L = [n for n ∈ N if isopen(n)]
     # Step 1: Initialize
