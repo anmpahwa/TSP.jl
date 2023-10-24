@@ -50,7 +50,6 @@ using Test
         S  = ALNS(χ, sₒ)
         s⃰  = S[end]
         visualize(s⃰)
-        animate(S)
         pltcnv(S)
         @test isfeasible(sₒ)
         @test isfeasible(s⃰)
