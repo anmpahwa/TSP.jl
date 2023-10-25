@@ -4,7 +4,7 @@ using Test
 
 @testset "TSP.jl" begin
     instances = ["att48", "a280"]
-    methods   = [:random, :cw]
+    methods   = [:random, :savings]
     χ   = ALNSParameters(
         n   =   4                       ,
         k   =   250                     ,

@@ -3,7 +3,7 @@
 
 Returns initial TSP solution using the given `method` for graph `G` given as a tuple of `Nodes` and `Arcs`.
 Available methods include,
-- Clarke and Wright Savings Algorithm   : `:cw`
+- Clarke and Wright Savings Algorithm   : `:savings`
 - Random Initialization                 : `:random`
 
 Optionally specify a random number generator `rng` as the first argument
@@ -14,7 +14,7 @@ initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, metho
 
 # Clarke and Wright Savings Algorithm
 # Create initial solution by merging routes that render the most savings until single route traversing all nodes remains
-function cw(rng::AbstractRNG, G)
+function savings(rng::AbstractRNG, G)
     N, A = G
     d = N[1]
     s = Solution(N, A)

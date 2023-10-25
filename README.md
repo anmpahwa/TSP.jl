@@ -31,7 +31,7 @@ parameters,
 - `ρ`     :   Reaction factor
 
 and an initial solution developed using one of the following methods,
-- Clarke and Wright Savings Algorithm   : `:cw`
+- Clarke and Wright Savings Algorithm   : `:savings`
 - Random Initialization                 : `:random`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
@@ -40,10 +40,9 @@ The ALNS metaheuristic iteratively removes a set of nodes using,
 - Worst Node Removal     : `:worstnode!`
 
 and consequently inserts removed nodes using,
-- Precise Best Insertion    : `:bestprecise!`
-- Perturb Best Insertion    : `:bestperturb!`
-- Precise Greedy Insertion  : `:greedyprecise!`
-- Perturb Greedy Insertion  : `:greedyperturb!`
+- Best                      : `:best!`
+- Precise Greedy Insertion  : `:precise!`
+- Perturb Greedy Insertion  : `:perturb!`
 - Regret-two Insertion      : `:regret2!`
 - Regret-three Insertion    : `:regret3!`
 
