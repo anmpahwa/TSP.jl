@@ -4,10 +4,9 @@
 Return solution inserting open nodes to the solution `s` using the given `method`.
 
 Available methods include,
-- Precise Best Insertion    : `:bestprecise!`
-- Perturb Best Insertion    : `:bestperturb!`
-- Precise Greedy Insertion  : `:greedyprecise!`
-- Perturb Greedy Insertion  : `:greedyperturb!`
+- Best                      : `:best!`
+- Precise Greedy Insertion  : `:precise!`
+- Perturb Greedy Insertion  : `:perturb!`
 - Regret-two Insertion      : `:regret2!`
 - Regret-three Insertion    : `:regret3!`
 
@@ -18,11 +17,10 @@ insert!(rng::AbstractRNG, s::Solution, method::Symbol)::Solution = getfield(TSP,
 insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
 # Best insertion
-# Iteratively insert randomly selected node at its best position until all open nodes have been added to the solution
-function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
+# Insert randomly selected node at its best position until all open nodes have been added to the solution
+function best!(rng::AbstractRNG, s::Solution)
     N = s.N
     d = N[1]
-    φ = isequal(mode, :perturb)
     # Step 1: Initialize
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
@@ -31,30 +29,27 @@ function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
     P = fill((0, 0), I)         # P[i]: best insertion postion of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ I
-        # Step 2.1: Iterate through all open nodes and every possible insertion position
+        # Step 2.1: Select a random open node
         z = f(s)
-        for (i,nₒ) ∈ pairs(L)
-            if isclose(nₒ) continue end
-            nₜ = d
-            nₕ = N[nₜ.h]
-            while true
-                # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
-                insertnode!(nₒ, nₜ, nₕ, s)
-                # Step 2.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + φ * rand(rng, Uniform(-0.2, 0.2)))
-                Δ  = z⁺ - z
-                # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
-                if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
-                # Step 2.1.4: Remove node from its position between tail node nₜ and head node nₕ
-                removenode!(nₒ, nₜ, nₕ, s)
-                if isequal(nₕ, d) break end
-                nₜ = nₕ
-                nₕ = N[nₜ.h]
-            end
-        end
-        # Step 2.2: Randomly select a node to insert at its best position
         i = sample(rng, I, Weights(W))
         nₒ = L[i]
+        nₜ = d
+        nₕ = N[nₜ.h]
+        while true
+            # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
+            insertnode!(nₒ, nₜ, nₕ, s)
+            # Step 2.1.2: Compute the insertion cost
+            z⁺ = f(s)
+            Δ  = z⁺ - z
+            # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
+            if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
+            # Step 2.1.4: Remove node from its position between tail node nₜ and head node nₕ
+            removenode!(nₒ, nₜ, nₕ, s)
+            if isequal(nₕ, d) break end
+            nₜ = nₕ
+            nₕ = N[nₜ.h]
+        end
+        # Step 2.2: Insert the node at its best position
         t  = P[i][1]
         h  = P[i][2]
         nₜ = N[t]
@@ -67,12 +62,10 @@ function bestinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
     end
     return s
 end
-bestprecise!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, :precise)
-bestperturb!(rng::AbstractRNG, s::Solution) = bestinsert!(rng, s, :perturb)
 
 # Greedy insertion
 # Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
-function greedyinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
+function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
     N = s.N
     d = N[1]
     φ = isequal(mode, :perturb)
@@ -119,12 +112,12 @@ function greedyinsert!(rng::AbstractRNG, s::Solution, mode::Symbol)
     end
     return s
 end
-greedyprecise!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s, :precise)
-greedyperturb!(rng::AbstractRNG, s::Solution) = greedyinsert!(rng, s, :perturb)
+precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :precise)
+perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :perturb)
 
 # Regret-K Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretKinsert!(rng::AbstractRNG, s::Solution, K::Int64)
+function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
     N = s.N
     d = N[1]
     # Step 1: Initialize
@@ -186,5 +179,5 @@ function regretKinsert!(rng::AbstractRNG, s::Solution, K::Int64)
     # Step 3: Return initial solution
     return s
 end
-regret2!(rng::AbstractRNG, s::Solution) = regretKinsert!(rng, s, Int64(2))
-regret3!(rng::AbstractRNG, s::Solution) = regretKinsert!(rng, s, Int64(3))
+regret2!(rng::AbstractRNG, s::Solution) = regretK!(rng, s, Int64(2))
+regret3!(rng::AbstractRNG, s::Solution) = regretK!(rng, s, Int64(3))

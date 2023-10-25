@@ -27,10 +27,9 @@ let
                     :worstnode!
                 ]                       ,
         Ψᵢ  =   [
-                    :bestprecise!   ,
-                    :bestperturb!   ,
-                    :greedyprecise! ,
-                    :greedyperturb! ,
+                    :best!          ,
+                    :precise!       ,
+                    :perturb!       ,
                     :regret2!       ,
                     :regret3!
                 ]                       ,
