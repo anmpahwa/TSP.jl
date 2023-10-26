@@ -1,8 +1,8 @@
+# Traveling Salesman Problem (TSP)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/anmol1104/TSP.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/anmol1104/TSP.jl/actions/workflows/CI.yml?query=branch%3Amaster)
 [![Coverage](https://codecov.io/gh/anmol1104/TSP.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/anmol1104/TSP.jl)
-
-# Traveling Salesman Problem (TSP)
 
 Given a graph `G = (N,A)` with set of nodes N and set of arcs `A` with arc traversal 
 cost `cᵢⱼ ; (i,j) ∈ A`, the objective of a Traveling Salesman Problem is to develop a 
