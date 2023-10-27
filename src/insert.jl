@@ -150,7 +150,7 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
                     k̲ = k
                     if Δ < Y[k,i] break end
                 end
-                for k ∈ k̅:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i]::Float64 end
+                for k ∈ k̅:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i] end
                 # Step 2.1.1.5: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
                 if isequal(nₕ, d) break end
