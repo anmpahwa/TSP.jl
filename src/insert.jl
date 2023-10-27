@@ -115,9 +115,9 @@ end
 precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :precise)
 perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :perturb)
 
-# Regret-K Insertion
+# Regret-k Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
-function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
+function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
     N = s.N
     d = N[1]
     # Step 1: Initialize
@@ -125,7 +125,7 @@ function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
     I = eachindex(L)
     X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
     P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
-    Y = fill(Inf, (K,I))        # Y[k,i]: insertion cost of node L[i] at kᵗʰ best position
+    Y = fill(Inf, (k̅,I))        # Y[k,i]: insertion cost of node L[i] at kᵗʰ best position
     R = fill(-Inf, I)           # R[i]  : regret-K cost of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ I
@@ -146,11 +146,11 @@ function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Revise K least insertion costs
                 k̲ = 1
-                for k ∈ 1:K
+                for k ∈ 1:k̅
                     k̲ = k
                     if Δ < Y[k,i] break end
                 end
-                for k ∈ K:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i]::Float64 end
+                for k ∈ k̅:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i]::Float64 end
                 # Step 2.1.1.5: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
                 if isequal(nₕ, d) break end
@@ -159,7 +159,7 @@ function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
             end
             # Step 2.1.2: Compute regret cost for node L[i]
             R[i] = 0.
-            for k ∈ 1:K R[i] += Y[k,i] - Y[1,i] end
+            for k ∈ 1:k̅ R[i] += Y[k,i] - Y[1,i] end
         end
         # Step 2.2: Insert node with highest regret cost at its best position (break ties by inserting the node with the lowest insertion cost)
         I̲  = findall(i -> i == maximum(R), R)
@@ -179,5 +179,5 @@ function regretK!(rng::AbstractRNG, s::Solution, K::Int64)
     # Step 3: Return initial solution
     return s
 end
-regret2!(rng::AbstractRNG, s::Solution) = regretK!(rng, s, Int64(2))
-regret3!(rng::AbstractRNG, s::Solution) = regretK!(rng, s, Int64(3))
+regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(2))
+regret3!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(3))
