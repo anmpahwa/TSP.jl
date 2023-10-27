@@ -68,7 +68,7 @@ end
 function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
     N = s.N
     d = N[1]
-    φ = isequal(mode, :perturb)
+    φ = isequal(mode, :ptb)
     # Step 1: Initialize
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
@@ -112,8 +112,8 @@ function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
     end
     return s
 end
-precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :precise)
-perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :perturb)
+precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :pcs)
+perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :ptb)
 
 # Regret-k Insertion
 # Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
@@ -162,7 +162,7 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
             for k ∈ 1:k̅ R[i] += Y[k,i] - Y[1,i] end
         end
         # Step 2.2: Insert node with highest regret cost at its best position (break ties by inserting the node with the lowest insertion cost)
-        I̲  = findall(i -> i == maximum(R), R)
+        I̲  = findall(isequal.(R, maximum(R)))
         i  = I̲[argmin(X[I̲])]
         nₒ = L[i]
         t  = P[i][1]
