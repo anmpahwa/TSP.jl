@@ -9,10 +9,8 @@ using Random
 using StatsBase
 
 include("datastructure.jl")
-include("func.jl")
+include("functions.jl")
 include("instance.jl")
-include("objfunction.jl")
-include("feasible.jl")
 include("initialize.jl")
 include("operations.jl")
 include("remove.jl")
