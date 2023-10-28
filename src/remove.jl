@@ -21,7 +21,7 @@ remove!(q::Int64, s::Solution, method::Symbol) = remove!(Random.GLOBAL_RNG, q, s
 function randomnode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     I = eachindex(N)
-    W = (!isone).(I)            # W[i]: sampling weight of node N[i]
+    W = (!isone).(I)            # W[i]: selection weight of node N[i]
     # Step 1: Randomly select customer nodes to remove until q nodes have been removed
     for _ ∈ 1:q
         i  = sample(rng, I, Weights(W))
@@ -41,7 +41,7 @@ function relatednode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
     A = s.A
     I = eachindex(N)
-    W = (!isone).(I)            # W[i]: sampling weight of node N[i]
+    W = (!isone).(I)            # W[i]: selection weight of node N[i]
     X = fill(-Inf, I)           # X[i]: relatedness of node N[i] with node N[j]
     # Step 1: Randomly select a pivot customer node
     j = sample(rng, I, Weights(W))

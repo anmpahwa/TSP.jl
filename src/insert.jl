@@ -24,7 +24,7 @@ function best!(rng::AbstractRNG, s::Solution)
     # Step 1: Initialize
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
-    W = ones(Int64, I)          # W[i]: sampling weight for node L[i]
+    W = ones(Int64, I)          # W[i]: selection weight for node L[i]
     x = Inf                     # x   : insertion cost at best position
     p = (0, 0)                  # p   : best insertion postion
     # Step 2: Iterate until all open nodes have been inserted into the route

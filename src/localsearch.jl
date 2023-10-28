@@ -23,7 +23,7 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     N = s.N
     # Step 1: Initialize
     I = eachindex(N)
-    W = ones(Int64, I)          # W[i]: sampling weight for node N[i]
+    W = ones(Int64, I)          # W[i]: selection weight for node N[i]
     x = Inf                     # x   : insertion cost at best position
     p = (0, 0)                  # p   : best insertion postion
     # Step 2: Iterate for k̅ iterations until improvement
