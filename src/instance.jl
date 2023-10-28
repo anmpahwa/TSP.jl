@@ -1,7 +1,7 @@
 # Builds instance as graph with set of nodes and arcs.
 function build(instance)
     # Nodes
-    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/nodes.csv"), types=[Int64, Float64, Float64]))
+    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/nodes.csv")))
     k  = nrow(df)
     K  = 1:k
     N  = Vector{Node}(undef, k)
