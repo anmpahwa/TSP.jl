@@ -1,7 +1,7 @@
 """
     insert!([rng], s::Solution, method::Symbol)
 
-Return solution inserting open nodes to the solution `s` using the given `method`.
+Returns solution `s` after inserting open nodes to the solution using the given `method`.
 
 Available methods include,
 - Best                      : `:best!`
@@ -16,8 +16,14 @@ Optionally specify a random number generator `rng` as the first argument
 insert!(rng::AbstractRNG, s::Solution, method::Symbol)::Solution = getfield(TSP, method)(rng, s)
 insert!(s::Solution, method::Symbol) = insert!(Random.GLOBAL_RNG, s, method)
 
-# Best insertion
-# Insert randomly selected node at its best position until all open nodes have been added to the solution
+
+
+"""
+    best!(rng::AbstractRNG, s::Solution)
+
+Returns solution `s` after inserting randomly selected node at its 
+best position until all open nodes have been inserted to the solution.
+"""
 function best!(rng::AbstractRNG, s::Solution)
     N = s.N
     d = N[1]
@@ -63,8 +69,16 @@ function best!(rng::AbstractRNG, s::Solution)
     return s
 end
 
-# Greedy insertion
-# Iteratively insert nodes with least insertion cost at its best position until all open nodes have been added to the solution
+
+
+"""
+    greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
+
+Returns solution `s` after iteratively inserting nodes with least insertion 
+cost until all open nodes have been added to the solution. Available modes 
+include `:pcs` (precise estimation of insertion cost) and `:ptb` (perturbed 
+estimation of insertion cost).
+"""
 function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
     N = s.N
     d = N[1]
@@ -112,11 +126,32 @@ function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
     end
     return s
 end
+"""
+    precise!(rng::AbstractRNG, s::Solution)
+
+Returns solution `s` after iteratively inserting nodes with 
+least insertion cost until all open nodes have been added 
+to the solution. Estimates insertion cost precisely.
+"""
 precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :pcs)
+"""
+    precise!(rng::AbstractRNG, s::Solution)
+
+Returns solution `s` after iteratively inserting nodes with 
+least insertion cost until all open nodes have been added to 
+the solution. Estimates insertion cost with a perturbration.
+"""
 perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :ptb)
 
-# Regret-k Insertion
-# Iteratively add nodes with highest regret cost at its best position until all open nodes have been added to the solution
+
+
+"""
+    regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
+
+Returns solution `s` after iteratively adding nodes with 
+highest regret-k cost at its best position until all open 
+nodes have been added to the solution.
+"""
 function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
     N = s.N
     d = N[1]
@@ -179,5 +214,19 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
     # Step 3: Return initial solution
     return s
 end
+"""
+    regret2!(rng::AbstractRNG, s::Solution)
+
+Returns solution `s` after iteratively adding nodes with 
+highest regret-2 cost at its best position until all open 
+nodes have been added to the solution.
+"""
 regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(2))
+"""
+    regret3!(rng::AbstractRNG, s::Solution)
+
+Returns solution `s` after iteratively adding nodes with 
+highest regret-3 cost at its best position until all open 
+nodes have been added to the solution.
+"""
 regret3!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(3))

@@ -1,7 +1,7 @@
 """
     localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)
 
-Return solution `s` performing local seach on the solution using 
+Returns solution `s` after performing local seach on the solution using 
 given `method` for `k̅` iterations until improvement.
 
 Available methods include,
@@ -15,9 +15,16 @@ Optionally specify a random number generator `rng` as the first argument
 localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)::Solution = getfield(TSP, method)(rng, k̅, s)
 localsearch!(k̅::Int64, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
 
-# Move
-# Iteratively move a randomly selected node in its best position if the move 
-# results in reduction in objective function value for k̅ iterations until improvement
+
+
+"""
+    move!(rng::AbstractRNG, k̅::Int64, s::Solution)
+
+Returns solution `s` after moving a randomly selected node 
+to its best position if the move results in a reduction in 
+objective function value, repeating for `k̅` iterations until 
+improvement.
+"""
 function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
     N = s.N
@@ -71,10 +78,16 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
     return s
 end
 
-# 2-opt: 
-# Iteratively takes 2 arcs and reconfigure them if the reconfigure 
-# results in reduction in objective function value (total possible 
-# reconfigurations 2²-1 = 3) for k̅ iterations until improvement
+
+
+"""
+    opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
+
+Returns solution `s` after iteratively taking 2 arcs from the solution 
+and reconfiguring them (total possible reconfigurations 2²-1 = 3) if the 
+reconfiguration results in a reduction in objective function value, repeating 
+for `k̅` iterations until improvement.
+"""
 function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
     N = s.N
@@ -121,9 +134,15 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
     return s
 end
 
-# Swap nodes
-# Iteratively swap two randomly selected nodes if the swap results in 
-# reduction in objective function value for k̅ iterations until improvement
+
+
+"""
+    swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
+
+Returns solution `s` after swapping two randomly selected 
+nodes if the swap results in a reduction in objective 
+function value, repeating for `k̅` iterations until improvement.
+"""
 function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
     N = s.N
     z = f(s)

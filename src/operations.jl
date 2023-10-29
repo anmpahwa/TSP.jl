@@ -1,4 +1,9 @@
-# Insert node nₒ between tail node nₜ and head node nₕ in solution s.
+"""
+    insertnode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
+
+Returns solution `s` after inserting node `nᵒ` between tail node `nᵗ` 
+and head node `nʰ` in solution `s`.
+"""
 function insertnode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     aₒ = s.A[(nₜ.i, nₕ.i)]
     aₜ = s.A[(nₜ.i, nₒ.i)]
@@ -11,7 +16,12 @@ function insertnode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     return s
 end
 
-# Remove node nₒ from its position between tail node nₜ and head node nₕ in solution s.
+"""
+    removenode!(nᵒ::Node, nᵗ::Node, nʰ::Node, s::Solution)
+
+Returns solution `s` after removing node `nᵒ` from its position between 
+tail node `nᵗ` and head node `nʰ` in solution `s`.
+"""
 function removenode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     aₒ = s.A[(nₜ.i, nₕ.i)]
     aₜ = s.A[(nₜ.i, nₒ.i)]

@@ -1,8 +1,8 @@
 """
     Node(i::Int64, x::Float64, y::Float64, t=i, h=i)
 
-A `Node` is a point on the graph at `(x,y)` with index `i`, 
-tail node index `t`, and head node index `h`.
+A `Node` is a point on the graph at `(x,y)` with index 
+`i`, tail node index `t`, and head node index `h`.
 """
 mutable struct Node
     i::Int64                                                    # Node index
@@ -28,8 +28,8 @@ end
 """
     Solution(N::Vector{Node}, A::Dict{Tuple{Int64,Int64}, Arc}, c=0.)
 
-A `Solution` is a graph with nodes `N`, arcs `A`, and TSP route 
-cost `c`.
+A `Solution` is a graph with nodes `N`, arcs `A`, and 
+TSP route cost `c`.
 """
 mutable struct Solution
     N::Vector{Node}                                             # Vector of depot nodes

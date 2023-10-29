@@ -1,4 +1,8 @@
-# Builds instance as graph with set of nodes and arcs.
+"""
+    build(instance::String)
+    
+Returns a tuple of nodes and arcs for the `instance`.
+"""
 function build(instance)
     # Nodes
     df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/nodes.csv")))

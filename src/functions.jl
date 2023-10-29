@@ -1,6 +1,29 @@
+"""
+    isequal(p::Node, q::Node)
+
+Return true if node `p` equals node `q`.
+Two node are equal if their indices (`i`) match.
+"""
 Base.isequal(p::Node, q::Node) = isequal(p.i, q.i)
+
+
+
+"""
+    isopen(n::Node)
+    
+Returns true if node `n` is open.
+A node is defined open if it is not being served.
+"""
 isopen(n::Node) = isequal(n.t, n.i) & isequal(n.i, n.h)
+"""
+    isclose(n::Node)
+    
+Returns true if node `n` is not open.
+A node is defined open if it is not being served.
+"""
 isclose(n::Node) = !isopen(n)
+
+
 
 """
     vectorize(s::Solution)
@@ -23,7 +46,14 @@ function vectorize(s::Solution)
     end
     return V
 end
+"""
+    hash(s::Solution)
+
+Returns hash on vectorized solution.
+"""
 Base.hash(s::Solution) = hash(vectorize(s))
+
+
 
 """
     f(s::Solution)
@@ -31,6 +61,8 @@ Base.hash(s::Solution) = hash(vectorize(s))
 Returns objective function value (solution cost).
 """
 f(s::Solution) = s.c
+
+
 
 """
     isfeasible(s::Solution)
