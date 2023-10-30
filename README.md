@@ -31,8 +31,8 @@ parameters,
 - `ρ`     :   Reaction factor
 
 and an initial solution developed using one of the following methods,
-- Clarke and Wright Savings Algorithm   : `:savings`
 - Random Initialization                 : `:random`
+- Clarke and Wright Savings Algorithm   : `:savings`
 
 The ALNS metaheuristic iteratively removes a set of nodes using,
 - Random Node Removal    : `:randomnode!`

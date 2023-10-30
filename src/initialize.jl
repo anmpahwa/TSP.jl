@@ -4,8 +4,8 @@
 Returns initial TSP solution using the given `method` for graph `G` given as a tuple of `Nodes` and `Arcs`.
 
 Available methods include,
-- Clarke and Wright Savings Algorithm   : `:savings`
 - Random Initialization                 : `:random`
+- Clarke and Wright Savings Algorithm   : `:savings`
 
 Optionally specify a random number generator `rng` as the first argument
 (defaults to `Random.GLOBAL_RNG`).

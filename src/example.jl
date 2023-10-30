@@ -16,7 +16,7 @@ let
     # Define ALNS parameters
     x = length(sₒ.N);
     n = max(500, ceil(x, digits=-(length(digits(x))-1)));
-    χ   = ALNSParameters(
+    χ   = ALNSparameters(
         n   =   n ÷ 25                  ,
         k   =   250                     ,
         m   =   2n                      ,
@@ -34,8 +34,8 @@ let
                     :regret3!
                 ]                       ,
         Ψₗ  =   [
-                    :move!      ,
-                    :opt!       ,
+                    :move!          ,
+                    :opt!           ,
                     :swap!
                 ]                       ,
         σ₁  =   15                      ,
