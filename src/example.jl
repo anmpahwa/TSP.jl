@@ -9,7 +9,7 @@ let
     # Visualize instance
     display(visualize(instance))
     # Define a random number generator
-    rng = MersenneTwister(1104);
+    rng = MersenneTwister(1234);
     # Define inital solution method and build the initial solution
     G  = build(instance)
     sₒ = initialsolution(rng, G, :random);
