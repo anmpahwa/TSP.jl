@@ -10,14 +10,15 @@ mutable struct Node
     y::Float64                                                  # Node location on the y-axis
     t::Int64                                                    # Tail node index
     h::Int64                                                    # Head node index
-    Node(i, x, y) = new(i, x, y, i, i)
+    Node(i, x, y) = new(i, x, y, 0, 0)
 end
+
+
 
 """
     Arc(i::Int64, j::Int64, c::Float64)
 
-An `Arc` is a connection between node `i` and `j` with 
-traversal cost `c`.
+An `Arc` is a connection between node `i` and `j` with traversal cost `c`.
 """
 struct Arc
     i::Int64                                                    # Tail node index
@@ -25,14 +26,15 @@ struct Arc
     c::Float64                                                  # Cost
 end
 
+
+
 """
     Solution(N::Vector{Node}, A::Dict{Tuple{Int64,Int64}, Arc}, c=0.)
 
-A `Solution` is a graph with nodes `N`, arcs `A`, and 
-TSP route cost `c`.
+A `Solution` is a graph with nodes `N`, arcs `A`, and TSP route cost `c`.
 """
-mutable struct Solution
-    N::Vector{Node}                                             # Vector of depot nodes
+struct Solution
+    N::Vector{Node}                                             # Vector of nodes
     A::Dict{Tuple{Int64,Int64}, Arc}                            # Set of arcs
     c::Float64                                                  # TSP route cost
     Solution(N, A) = new(N, A, 0.)

@@ -1,7 +1,7 @@
 """
     initialsolution([rng], G, method)
 
-Returns initial TSP solution using the given `method` for graph `G` given as a tuple of `Nodes` and `Arcs`.
+Returns initial TSP `Solution` using the given `method` for graph `G` given as a tuple of nodes and arcs.
 
 Available methods include,
 - Random Initialization                 : `:random`
@@ -21,7 +21,7 @@ initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, metho
 """
     savings(rng::AbstractRNG, G)
 
-Create initial solution merging routes that render the most savings until no merger can render further savings.
+Returns initial `Solution` created by merging routes that render the most savings until no merger can render further savings.
 """
 function savings(rng::AbstractRNG, G)
     N, A = G
@@ -113,12 +113,12 @@ end
 """
     random(rng::AbstractRNG, G)
 
-Create initial solution randomly adding nodes to the solution.
+Returns initial `Solution` created by randomly adding nodes to the solution until all nodes have been added to the solution.
 """
 function random(rng::AbstractRNG, G)
     N, A = G
-    s  = Solution(N, A)
-    d  = N[1]
+    s = Solution(N, A)
+    d = N[1]
     # Step 1: Intialize tail nₜ and head node nₕ as depot nodes
     nₜ = d
     nₕ = d

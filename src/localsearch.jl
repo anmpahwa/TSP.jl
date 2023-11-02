@@ -106,13 +106,13 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
         if isequal(n₂, n₅) || isequal(n₁, n₅) continue end 
         q  = n₆
         nₒ = n₂
-        P  = n₃
+        p  = n₃
         while true
-            removenode!(nₒ, n₁, P, s)
+            removenode!(nₒ, n₁, p, s)
             insertnode!(nₒ, n₅, q, s)
             q  = nₒ
-            nₒ = P
-            P  = N[P.h]
+            nₒ = p
+            p  = N[p.h]
             if isequal(nₒ, n₅) break end
         end
         # Step 1.2: Compute change in objective function value
@@ -123,13 +123,13 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
         # Step 1.4: Reconfigure the two arcs to original state and go to step 1.1
         q  = n₆
         nₒ = n₅
-        P  = n₄
+        p  = n₄
         while true
-            removenode!(nₒ, n₁, P, s)
+            removenode!(nₒ, n₁, p, s)
             insertnode!(nₒ, n₂, q, s)
             q  = nₒ
-            nₒ = P
-            P  = N[P.h]
+            nₒ = p
+            p  = N[p.h]
             if isequal(nₒ, n₂) break end
         end
     end
