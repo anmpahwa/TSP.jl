@@ -33,7 +33,7 @@ end
 
 A `Solution` is a graph with nodes `N`, arcs `A`, and TSP route cost `c`.
 """
-struct Solution
+mutable struct Solution
     N::Vector{Node}                                             # Vector of nodes
     A::Dict{Tuple{Int64,Int64}, Arc}                            # Set of arcs
     c::Float64                                                  # TSP route cost
