@@ -12,10 +12,7 @@ Available methods include,
 Optionally specify a random number generator `rng` as the first argument 
 (defaults to `Random.GLOBAL_RNG`).
 """
-function localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)::Solution 
-    try return getfield(TSP, method)(rng, k̅, s) catch end
-    return getfield(Main, method)(rng, k̅, s)
-end
+localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)::Solution = isdefined(TSP, method) ? getfield(TSP, method)(rng, k̅, s) : getfield(Main, method)(rng, k̅, s)
 localsearch!(k̅::Int64, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
 
 

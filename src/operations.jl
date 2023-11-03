@@ -28,8 +28,8 @@ function removenode!(nₒ::Node, nₜ::Node, nₕ::Node, s::Solution)
     aₕ = s.A[(nₒ.i, nₕ.i)]
     nₜ.h = nₕ.i
     nₕ.t = nₜ.i
-    nₒ.t = nₒ.i
-    nₒ.h = nₒ.i
+    nₒ.t = 0
+    nₒ.h = 0
     s.c -= aₜ.c + aₕ.c - aₒ.c
     return s
 end
