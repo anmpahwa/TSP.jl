@@ -61,7 +61,7 @@ Base.hash(s::Solution) = hash(vectorize(s))
 
 Returns objective function value (solution cost).
 """
-f(s::Solution) = s.r.c
+f(s::Solution) = s.c
 
 
 
