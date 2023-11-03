@@ -1,6 +1,7 @@
 using TSP
 using Revise
 using Test
+using Random
 
 @testset "TSP.jl" begin
     instances = ["att48", "a280"]
@@ -44,10 +45,11 @@ using Test
         method   = methods[k]
         println("\n Solving $instance")
         visualize(instance)
-        G  = build(instance)
-        sₒ = initialsolution(G, method)     
-        S  = ALNS(χ, sₒ)
-        s⃰  = S[end]
+        rng = MersenneTwister(k)
+        G   = build(instance)
+        sₒ  = initialsolution(rng, G, method)     
+        S   = ALNS(rng, χ, sₒ)
+        s⃰   = S[end]
         visualize(s⃰)
         pltcnv(S)
         @test isfeasible(sₒ)
