@@ -26,3 +26,4 @@ export  initialize, vectorize, f, isfeasible,
 end
 
 # TODO: Improve efficiency of move!(rng, k̅, s) with use of relatedness metric to avoid complete enumeration of positions within the route.
+# TODO: Calibrate parameters for improved solution quality as well as run time.
