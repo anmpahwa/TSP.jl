@@ -25,4 +25,4 @@ export  initialize, vectorize, f, isfeasible,
         
 end
 
-# TODO: Improve efficiency of local search methods to avoid enumeration of customers within a route. (move!(rng, k̅, s); opt!(rng, k̅, s))
+# TODO: Improve efficiency of local search methods to avoid enumeration of customers within a route. (move!(rng, k̅, s))
