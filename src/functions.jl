@@ -12,14 +12,14 @@ Base.isequal(p::Node, q::Node) = isequal(p.i, q.i)
     isopen(n::Node)
     
 Returns `true` if node `n` is open.
-A `Node` is defined open if it is not being served.
+A `Node` is defined open if it is not being serviced.
 """
 isopen(n::Node) = iszero(n.t) && iszero(n.h)
 """
     isclose(n::Node)
     
-Returns `true` if node `n` is not open.
-A `Node` is defined open if it is not being served.
+Returns `true` if node `n` is closed.
+A `Node` is defined closed if it is being serviced.
 """
 isclose(n::Node) = !isopen(n)
 
@@ -32,7 +32,7 @@ Returns `Solution` as a list of nodes in the order of visit.
 """
 function vectorize(s::Solution)
     N = s.N
-    V = Int64[]
+    V = Int[]
     if all(isopen, N) return V end
     i  = findfirst(isclose.(N))
     nₒ = N[i]
@@ -71,3 +71,20 @@ f(s::Solution) = s.c
 Returns `true` if all nodes are served on the route.
 """
 isfeasible(s::Solution) = all(isclose, s.N)
+
+
+
+"""
+    relatedness(n¹::Node, n²::Node, s::Solution)
+
+Returns a measure of similarity between nodes `n¹` and `n²` in solution `s`.
+"""
+function relatedness(n¹::Node, n²::Node, s::Solution)
+    ϵ  = 1e-5
+    φ  = 1
+    q  = 0
+    l  = s.A[(n¹.i,n².i)].c
+    t  = 0
+    z  = φ/(q + l + t + ϵ)
+    return z
+end

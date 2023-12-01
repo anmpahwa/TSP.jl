@@ -69,36 +69,60 @@ function visualize(s::Solution; backend=gr)
     return fig
 end
 
+
+
 """
-    animate(S::Vector{Solution}; fps=10)
+    animate(S::OffsetVector{Solution}; fps=10)
 
 Iteratively plots solutions in `S` to develop a gif at given `fps`.
 """
-function animate(S::Vector{Solution}; fps=10)
-    K = 0:(length(S)-1)
-    figs = Vector(undef, length(S))
-    for (k,s) ∈ pairs(S)
-        fig = visualize(s, backend=gr)
-        plot!(title="Iteration #$(K[k])", titlefontsize=11)
-        figs[k] = fig
+function animate(S::OffsetVector{Solution}; fps=1)
+    s⃰ = S[0]
+    z⃰ = f(s⃰)
+    figs = []
+    for k ∈ eachindex(S)
+        s = S[k]
+        z = f(s)
+        if z < 0.99z⃰ 
+            s⃰ = s
+            z⃰ = z
+            fig = visualize(s⃰, backend=gr)
+            plot!(title="Iteration #$k", titlefontsize=11)
+            push!(figs, fig)
+        end
     end
-    anim = @animate for fig in figs
+    anim = @animate for fig ∈ figs
         plot(fig)
     end
     gif(anim, fps=fps, show_msg=false)
 end
 
-"""
-    pltcnv(S::Vector{Solution}; backend=gr)
 
-Plots objective function values for solutions in `S`.
+
+"""
+    pltcnv(Z::OffsetVector{Float64}; backend=gr)
+
+Plots convergence using objective function evaluations vector `Z`. 
 Uses given `backend` to plot (defaults to `gr`).
 """
-function pltcnv(S::Vector{Solution}; backend=gr)
+function pltcnv(Z::OffsetVector{Float64}; backend=gr)
     backend()
-    Y = [f(s) for s ∈ S]
-    X = 0:(length(S)-1)
     fig = plot(legend=:none)
-    plot!(X,Y, xlabel="iterations", ylabel="objective function value")
+    z⃰ = Z[0]
+    Y₁ = Int[]
+    for (k, z) ∈ pairs(Z)
+        if z < 0.99z⃰ 
+            z⃰ = z
+            push!(Y₁, k)
+        end
+    end
+    vline!(Y₁, color=:black, linewidth=0.25)
+    Y₂ = zeros(eachindex(Z))
+    z⃰  = minimum(Z)
+    for (k, z) ∈ pairs(Z)
+        Y₂[k] = (z/z⃰ - 1) * 100 
+    end
+    X = eachindex(Z)
+    plot!(X, Y₂, xlabel="iterations", ylabel="deviation from the best (%)", color=:steelblue)
     return fig
 end

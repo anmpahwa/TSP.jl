@@ -1,7 +1,7 @@
 # NOTE: The first node, assumed to be the depot node, is prohibited from being removed.
 
 """
-    remove!([rng], q::Int64, s::Solution, method::Symbol)
+    remove!([rng::AbstractRNG], q::Int64, s::Solution, method::Symbol)
 
     Returns solution `s` after removing `q` nodes using the given `method`.
 
@@ -49,17 +49,15 @@ Returns solution `s` after removing `q` nodes most related to a randomly selecte
 """
 function relatednode!(rng::AbstractRNG, q::Int64, s::Solution)
     N = s.N
-    A = s.A
     I = eachindex(N)
     W = (!isone).(I)            # W[i]: selection weight of node N[i]
     X = fill(-Inf, I)           # X[i]: relatedness of node N[i] with node N[j]
     # Step 1: Randomly select a pivot customer node
-    j = sample(rng, I, Weights(W))
+    nₒ= sample(rng, N, Weights(W))
     # Step 2: For each customer node, evaluate relatedness to this pivot customer node
-    for i ∈ I
+    for (i,n) ∈ pairs(N)
         if isone(i) continue end
-        a = A[(i,j)]
-        X[i] = 1/a.c
+        X[i] = relatedness(nₒ, n, s)
     end
     # Step 3: Remove q most related customer nodes
     for _ ∈ 1:q

@@ -1,12 +1,12 @@
 """
-    localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)
+    localsearch!([rng::AbstractRNG], k̅::Int64, s::Solution, method::Symbol)
 
 Returns solution `s` after performing local seach on the solution using 
-given `method` for `k̅` iterations until improvement.
+given `method` for `k̅` iterations.
 
 Available methods include,
 - Move  : `:move!`
-- 2-Opt : `:opt!`
+- Opt   : `:opt!`
 - Swap  : `:swap!`
 
 Optionally specify a random number generator `rng` as the first argument 
@@ -22,22 +22,18 @@ localsearch!(k̅::Int64, s::Solution, method::Symbol) = localsearch!(Random.GLOB
 
 Returns solution `s` after moving a randomly selected node 
 to its best position if the move results in a reduction in 
-objective function value, repeating for `k̅` iterations until 
-improvement.
+objective function value, repeating for `k̅` iterations.
 """
 function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
-    z = f(s)
     N = s.N
     # Step 1: Initialize
-    I = eachindex(N)
-    W = ones(Int64, I)          # W[i]: selection weight for node N[i]
-    x = Inf                     # x   : insertion cost at best position
-    p = (0, 0)                  # p   : best insertion postion
-    # Step 2: Iterate for k̅ iterations until improvement
+    x = Inf                         # x   : insertion cost at best position
+    p = (0, 0)                      # p   : best insertion postion
+    # Step 2: Iterate for k̅ iterations
     for _ ∈ 1:k̅
         # Step 2.1: Randomly select a node
-        i  = sample(rng, I, Weights(W))
-        nₒ = N[i]
+        z  = f(s)
+        nₒ = sample(rng, N)
         # Step 2.2: Remove this node from its position between tail node nₜ and head node nₕ
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
@@ -61,18 +57,14 @@ function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
             nₕ = N[nₜ.h]
         end
         # Step 2.4: Move the node to its best position (this could be its original position as well)
-        Δ  = x
         t  = p[1]
         h  = p[2]
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.5: Revise vectors appropriately
-        W[i] = 0
         x = Inf
         p = (0, 0)
-        # Step 2.6: If the move results in reduction in objective function value, then go to step 3, else return to step 2.1
-        Δ ≥ 0 ? continue : break
     end
     # Step 3: Return solution
     return s
@@ -86,7 +78,7 @@ end
 Returns solution `s` after iteratively taking 2 arcs from the solution 
 and reconfiguring them (total possible reconfigurations 2²-1 = 3) if the 
 reconfiguration results in a reduction in objective function value, repeating 
-for `k̅` iterations until improvement.
+for `k̅` iterations.
 """
 function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
     z = f(s)
@@ -115,19 +107,21 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
         # Step 1.2: Compute change in objective function value
         z′ = f(s)
         Δ  = z′ - z 
-        # Step 1.3: If the reconfigure results in reduction in objective function value then go to step 2, else go to step 1.4
-        if Δ < 0 break end
+        # Step 1.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
+        if Δ < 0 z = z′
         # Step 1.4: Reconfigure the two arcs to original state and go to step 1.1
-        q  = n₆
-        nₒ = n₅
-        p  = n₄
-        while true
-            removenode!(nₒ, n₁, p, s)
-            insertnode!(nₒ, n₂, q, s)
-            q  = nₒ
-            nₒ = p
-            p  = N[p.h]
-            if isequal(nₒ, n₂) break end
+        else
+            q  = n₆
+            nₒ = n₅
+            p  = n₄
+            while true
+                removenode!(nₒ, n₁, p, s)
+                insertnode!(nₒ, n₂, q, s)
+                q  = nₒ
+                nₒ = p
+                p  = N[p.h]
+                if isequal(nₒ, n₂) break end
+            end
         end
     end
     # Step 2: Return solution
@@ -141,16 +135,18 @@ end
 
 Returns solution `s` after swapping two randomly selected 
 nodes if the swap results in a reduction in objective 
-function value, repeating for `k̅` iterations until improvement.
+function value, repeating for `k̅` iterations.
 """
 function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
     N = s.N
     z = f(s)
-    # Step 1: Iterate for k̅ iterations until improvement
+    # Step 1: Iterate for k̅ iterations
     for _ ∈ 1:k̅
         # Step 1.1: Swap two randomly selected nodes
         # n₁ → n₂ → n₃ and n₄ → n₅ → n₆
-        n₂, n₅ = sample(rng, N), sample(rng, N)
+        n₂ = sample(rng, N)
+        W  = [isequal(n₂, n₅) ? 0. : relatedness(n₂, n₅, s) for n₅ ∈ N]
+        n₅ = sample(rng, N, Weights(W))
         if isequal(n₂, n₅) continue end
         n₁ = N[n₂.t]
         n₃ = N[n₂.h]
@@ -174,23 +170,25 @@ function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
         # Step 1.2: Compute change in objective function value
         z′ = f(s)
         Δ  = z′ - z 
-        # Step 1.3: If the swap results in reduction in objective function value then go to step 2, else go to step 1.4
-        if Δ < 0 break end
+        # Step 1.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
+        if Δ < 0 z = z′
         # Step 1.4: Reswap the two nodes and go to step 1.1
-        # n₁ → n₂ (n₄) → n₃ (n₅) → n₆   ⇒   n₁ → n₃ (n₅) → n₂ (n₄) → n₆
-        if isequal(n₃, n₅)
-            removenode!(n₂, n₅, n₆, s)
-            insertnode!(n₂, n₁, n₃, s)
-        # n₄ → n₅ (n₁) → n₂ (n₆) → n₃   ⇒   n₄ → n₂ (n₆) → n₅ (n₁) → n₃   
-        elseif isequal(n₂, n₆)
-            removenode!(n₂, n₄, n₅, s)
-            insertnode!(n₂, n₁, n₃, s)
-        # n₁ → n₂ → n₃ and n₄ → n₅ → n₆ ⇒   n₁ → n₅ → n₃ and n₄ → n₂ → n₆
-        else 
-            removenode!(n₅, n₁, n₃, s)
-            removenode!(n₂, n₄, n₆, s)
-            insertnode!(n₂, n₁, n₃, s)
-            insertnode!(n₅, n₄, n₆, s)
+        else
+            # n₁ → n₂ (n₄) → n₃ (n₅) → n₆   ⇒   n₁ → n₃ (n₅) → n₂ (n₄) → n₆
+            if isequal(n₃, n₅)
+                removenode!(n₂, n₅, n₆, s)
+                insertnode!(n₂, n₁, n₃, s)
+            # n₄ → n₅ (n₁) → n₂ (n₆) → n₃   ⇒   n₄ → n₂ (n₆) → n₅ (n₁) → n₃   
+            elseif isequal(n₂, n₆)
+                removenode!(n₂, n₄, n₅, s)
+                insertnode!(n₂, n₁, n₃, s)
+            # n₁ → n₂ → n₃ and n₄ → n₅ → n₆ ⇒   n₁ → n₅ → n₃ and n₄ → n₂ → n₆
+            else 
+                removenode!(n₅, n₁, n₃, s)
+                removenode!(n₂, n₄, n₆, s)
+                insertnode!(n₂, n₁, n₃, s)
+                insertnode!(n₅, n₄, n₆, s)
+            end
         end
     end
     # Step 2: Return solution

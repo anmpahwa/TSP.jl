@@ -1,17 +1,22 @@
 """
-    initialsolution([rng], G, method)
-
-Returns initial TSP `Solution` using the given `method` for graph `G` given as a tuple of nodes and arcs.
-
-Available methods include,
-- Random Initialization                 : `:random`
-- Clarke and Wright Savings Algorithm   : `:savings`
-
-Optionally specify a random number generator `rng` as the first argument
-(defaults to `Random.GLOBAL_RNG`).
+    build(instance::String)
+    
+Returns a tuple of nodes and arcs for the `instance`.
 """
-initialsolution(rng::AbstractRNG, G, method::Symbol)::Solution = isdefined(TSP, method) ? getfield(TSP, method)(rng, G) : getfield(Main, method)(rng, G)
-initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, method)
+function build(instance::String)
+    # Nodes
+    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/nodes.csv")))
+    k  = nrow(df)
+    K  = 1:k
+    N  = Vector{Node}(undef, k)
+    for k ∈ K N[k] = Node(df[k,1], df[k,2], df[k,3]) end
+    # Arcs
+    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/arcs.csv"), header=false))
+    A  = Dict{Tuple{Int64,Int64},Arc}()
+    for i ∈ K for j ∈ K A[(i,j)] = Arc(i, j, df[i,j]) end end
+    G  = (N, A)
+    return G
+end
 
 
 
@@ -20,10 +25,11 @@ initialsolution(G, method::Symbol) = initialsolution(Random.GLOBAL_RNG, G, metho
 
 Returns initial `Solution` created by merging routes that render the most savings until no merger can render further savings.
 """
-function savings(rng::AbstractRNG, G)
-    N, A = G
+function savings(instance::String)
+    G = build(instance)
+    s = Solution(G...)
+    N = s.N
     d = N[1]
-    s = Solution(N, A)
     # Step 1: Initialize solution with routes to every node from the depot node (first node)
     k = length(N)
     K = eachindex(N)
@@ -107,25 +113,10 @@ function savings(rng::AbstractRNG, G)
 end
 
 
-"""
-    random(rng::AbstractRNG, G)
 
-Returns initial `Solution` created by randomly adding nodes to the solution until all nodes have been added to the solution.
 """
-function random(rng::AbstractRNG, G)
-    N, A = G
-    s = Solution(N, A)
-    d = N[1]
-    # Step 1: Intialize tail nₜ and head node nₕ as depot nodes
-    nₜ = d
-    nₕ = d
-    while any(isopen, N)
-        # Step 1.1: Randomly select a node nₒ to insert between tail node nₜ (depot node d) and head node nₕ
-        nₒ = sample(rng, N, Weights(isopen.(N)))
-        insertnode!(nₒ, nₜ, nₕ, s)
-        # Step 1.2: Update head node nₕ as current node nₒ
-        nₕ = nₒ
-    end
-    # Step 2: Return initial solution
-    return s
-end
+    initialize([rng::AbstractRNG], instance::String)
+
+Returns initial LRP `Solution` developed using Clark and Wright Savings Algorithm.
+"""
+initialize(instance::String) = savings(instance)

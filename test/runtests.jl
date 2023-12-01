@@ -4,57 +4,51 @@ using Test
 using Random
 
 @testset "TSP.jl" begin
-    instances = ["att48", "a280"]
-    methods   = [:random, :savings]
-    χ   = ALNSparameters(
-        n   =   4                       ,
-        k   =   250                     ,
-        m   =   200                     ,
-        j   =   125                     ,
+    χ = ALNSparameters(
+        j   =   50                      ,
+        k   =   5                       ,
+        n   =   10                      ,
+        m   =   1000                    ,
         Ψᵣ  =   [
-                    :randomnode!    , 
-                    :relatednode!   ,
-                    :worstnode!   
-                ]                       , 
+                    :randomnode!        ,
+                    :relatednode!       ,
+                    :worstnode!
+                ]                       ,
         Ψᵢ  =   [
-                    :best!          ,
-                    :precise!       ,
-                    :perturb!       ,
-                    :regret2!       ,
+                    :best!              ,
+                    :precise!           ,
+                    :perturb!           ,
+                    :regret2!           ,
                     :regret3!
                 ]                       ,
         Ψₗ  =   [
-                    :move!      ,
-                    :opt!       ,
-                    :swap!
+                    :move!              ,
+                    :swap!              ,
+                    :opt!
                 ]                       ,
         σ₁  =   15                      ,
         σ₂  =   10                      ,
         σ₃  =   3                       ,
-        ω   =   0.05                    ,
-        τ   =   0.5                     ,
-        𝜃   =   0.9975                  ,
-        C̲   =   4                       ,
-        C̅   =   60                      ,
         μ̲   =   0.1                     ,
+        C̲   =   4                       ,
         μ̅   =   0.4                     ,
-        ρ   =   0.1                     ,
+        C̅   =   60                      ,
+        ω̅   =   0.05                    ,
+        τ̅   =   0.5                     ,
+        ω̲   =   0.01                    ,
+        τ̲   =   0.01                    ,
+        θ   =   0.9985                  ,
+        ρ   =   0.1
     );
-    for k ∈ 1:2
-        instance = instances[k]
-        method   = methods[k]
-        println("\n Solving $instance")
+    instances = ["att48", "a280"]
+    for instance ∈ instances
         visualize(instance)
-        rng = MersenneTwister(k)
-        G   = build(instance)
-        sₒ  = initialsolution(rng, G, method)     
-        S   = ALNS(rng, χ, sₒ)
-        s⃰   = S[end]
+        println(instance)
+        sₒ = initialize(instance)     
+        s⃰  = ALNS(χ, sₒ)
         visualize(s⃰)
-        pltcnv(S)
-        @test isfeasible(sₒ)
         @test isfeasible(s⃰)
         @test f(s⃰) ≤ f(sₒ)
-    end
+    end   
     return
 end

@@ -1,5 +1,5 @@
 """
-    insert!([rng], s::Solution, method::Symbol)
+    insert!([rng::AbstractRNG], s::Solution, method::Symbol)
 
 Returns solution `s` after inserting open nodes to the solution using the given `method`.
 
@@ -36,8 +36,8 @@ function best!(rng::AbstractRNG, s::Solution)
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ I
         # Step 2.1: Select a random open node
-        z = f(s)
-        i = sample(rng, I, Weights(W))
+        z  = f(s)
+        i  = sample(rng, I, Weights(W))
         nₒ = L[i]
         nₜ = d
         nₕ = N[nₜ.h]
@@ -45,8 +45,8 @@ function best!(rng::AbstractRNG, s::Solution)
             # Step 2.1.1: Insert node between tail node nₜ and head node nₕ
             insertnode!(nₒ, nₜ, nₕ, s)
             # Step 2.1.2: Compute the insertion cost
-            z⁺ = f(s)
-            Δ  = z⁺ - z
+            z′ = f(s)
+            Δ  = z′ - z
             # Step 2.1.3: Revise least insertion cost and the corresponding best insertion position
             if Δ < x x, p = Δ, (nₜ.i, nₕ.i) end
             # Step 2.1.4: Remove node from its position between tail node nₜ and head node nₕ
@@ -101,8 +101,8 @@ function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
                 # Step 2.1.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.1.2: Compute the insertion cost
-                z⁺ = f(s) * (1 + φ * rand(rng, Uniform(-0.2, 0.2)))
-                Δ  = z⁺ - z
+                z′ = f(s) * (1 + φ * rand(rng, Uniform(-0.2, 0.2)))
+                Δ  = z′ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Remove node from its position between tail node nₜ and head node nₕ
@@ -175,8 +175,8 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
                 # Step 2.1.1.1: Insert node between tail node nₜ and head node nₕ
                 insertnode!(nₒ, nₜ, nₕ, s)
                 # Step 2.1.1.2: Compute the insertion cost
-                z⁺ = f(s)
-                Δ  = z⁺ - z
+                z′ = f(s)
+                Δ  = z′ - z
                 # Step 2.1.1.3: Revise least insertion cost and the corresponding best insertion position
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Revise K least insertion costs
