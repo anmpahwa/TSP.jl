@@ -1,17 +1,24 @@
 """
-    build(instance::String)
+    build(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
     
-Returns a tuple of nodes and arcs for the `instance`.
+Returns a tuple of nodes and arcs for the `instance`. 
+
+Note, `dir` locates the the folder containing instance files as sub-folders.
+
+    <dir>
+    |-<instance>
+        |-nodes.csv
+        |-arcs.csv
 """
-function build(instance::String)
+function build(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
     # Nodes
-    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/nodes.csv")))
+    df = DataFrame(CSV.File(joinpath(dir, "$instance/nodes.csv")))
     k  = nrow(df)
     K  = 1:k
     N  = Vector{Node}(undef, k)
     for k ∈ K N[k] = Node(df[k,1], df[k,2], df[k,3]) end
     # Arcs
-    df = DataFrame(CSV.File(joinpath(dirname(@__DIR__), "instances/$instance/arcs.csv"), header=false))
+    df = DataFrame(CSV.File(joinpath(dir, "$instance/arcs.csv"), header=false))
     A  = Dict{Tuple{Int64,Int64},Arc}()
     for i ∈ K for j ∈ K A[(i,j)] = Arc(i, j, df[i,j]) end end
     G  = (N, A)
@@ -21,12 +28,20 @@ end
 
 
 """
-    savings(rng::AbstractRNG, G)
+    savings(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
 
-Returns initial `Solution` created by merging routes that render the most savings until no merger can render further savings.
+Returns initial `Solution` created by merging routes that render the most 
+savings until no merger can render further savings. 
+
+Note, `dir` locates the the folder containing instance files as sub-folders.
+
+    <dir>
+    |-<instance>
+        |-nodes.csv
+        |-arcs.csv
 """
-function savings(instance::String)
-    G = build(instance)
+function savings(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
+    G = build(instance; dir=dir)
     s = Solution(G...)
     N = s.N
     d = N[1]
@@ -115,8 +130,16 @@ end
 
 
 """
-    initialize([rng::AbstractRNG], instance::String)
+    initialize(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
 
-Returns initial LRP `Solution` developed using Clark and Wright Savings Algorithm.
+Returns initial LRP `Solution` developed using Clark and Wright Savings Algorithm 
+for the `instance`. 
+
+Note, `dir` locates the the folder containing instance files as sub-folders.
+    
+    <dir>
+    |-<instance>
+        |-nodes.csv
+        |-arcs.csv
 """
-initialize(instance::String) = savings(instance)
+initialize(instance::String; dir=joinpath(dirname(@__DIR__), "instances")) = savings(instance; dir=dir)
