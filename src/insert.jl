@@ -25,12 +25,12 @@ Returns solution `s` after inserting randomly selected node at its
 best position until all open nodes have been inserted to the solution.
 """
 function best!(rng::AbstractRNG, s::Solution)
-    N = s.N
-    d = N[1]
     # Step 1: Initialize
+    N = s.N
+    d = sample(rng, N, Weights(isclose.(N)))
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
-    W = ones(Int64, I)          # W[i]: selection weight for node L[i]
+    W = ones(Int, I)            # W[i]: selection weight for node L[i]
     x = Inf                     # x   : insertion cost at best position
     p = (0, 0)                  # p   : best insertion postion
     # Step 2: Iterate until all open nodes have been inserted into the route
@@ -72,18 +72,18 @@ end
 
 
 """
-    greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
+    greedy!(rng::AbstractRNG, s::Solution; mode::Symbol)
 
 Returns solution `s` after iteratively inserting nodes with least insertion 
 cost until all open nodes have been added to the solution. Available modes 
 include `:pcs` (precise estimation of insertion cost) and `:ptb` (perturbed 
 estimation of insertion cost).
 """
-function greedy!(rng::AbstractRNG, s::Solution, mode::Symbol)
-    N = s.N
-    d = N[1]
-    φ = isequal(mode, :ptb)
+function greedy!(rng::AbstractRNG, s::Solution; mode::Symbol)
     # Step 1: Initialize
+    N = s.N
+    d = sample(rng, N, Weights(isclose.(N)))
+    φ = isequal(mode, :ptb)
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
     X = fill(Inf, I)            # X[i]: insertion cost of node L[i] at best position
@@ -133,7 +133,7 @@ Returns solution `s` after iteratively inserting nodes with
 least insertion cost until all open nodes have been added 
 to the solution. Estimates insertion cost precisely.
 """
-precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :pcs)
+precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:pcs)
 """
     precise!(rng::AbstractRNG, s::Solution)
 
@@ -141,21 +141,21 @@ Returns solution `s` after iteratively inserting nodes with
 least insertion cost until all open nodes have been added to 
 the solution. Estimates insertion cost with a perturbration.
 """
-perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s, :ptb)
+perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:ptb)
 
 
 
 """
-    regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
+    regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
 
 Returns solution `s` after iteratively adding nodes with 
 highest regret-k cost at its best position until all open 
 nodes have been added to the solution.
 """
-function regretk!(rng::AbstractRNG, s::Solution, k̅::Int64)
-    N = s.N
-    d = N[1]
+function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
     # Step 1: Initialize
+    N = s.N
+    d = sample(rng, N, Weights(isclose.(N)))
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
     X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
@@ -221,7 +221,7 @@ Returns solution `s` after iteratively adding nodes with
 highest regret-2 cost at its best position until all open 
 nodes have been added to the solution.
 """
-regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(2))
+regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, 2)
 """
     regret3!(rng::AbstractRNG, s::Solution)
 
@@ -229,4 +229,4 @@ Returns solution `s` after iteratively adding nodes with
 highest regret-3 cost at its best position until all open 
 nodes have been added to the solution.
 """
-regret3!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, Int64(3))
+regret3!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, 3)

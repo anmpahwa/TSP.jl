@@ -1,5 +1,5 @@
 """
-    localsearch!([rng::AbstractRNG], k̅::Int64, s::Solution, method::Symbol)
+    localsearch!([rng::AbstractRNG], k̅::Int, s::Solution, method::Symbol)
 
 Returns solution `s` after performing local seach on the solution using 
 given `method` for `k̅` iterations.
@@ -12,21 +12,21 @@ Available methods include,
 Optionally specify a random number generator `rng` as the first argument 
 (defaults to `Random.GLOBAL_RNG`).
 """
-localsearch!(rng::AbstractRNG, k̅::Int64, s::Solution, method::Symbol)::Solution = isdefined(TSP, method) ? getfield(TSP, method)(rng, k̅, s) : getfield(Main, method)(rng, k̅, s)
-localsearch!(k̅::Int64, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
+localsearch!(rng::AbstractRNG, k̅::Int, s::Solution, method::Symbol)::Solution = isdefined(TSP, method) ? getfield(TSP, method)(rng, k̅, s) : getfield(Main, method)(rng, k̅, s)
+localsearch!(k̅::Int, s::Solution, method::Symbol) = localsearch!(Random.GLOBAL_RNG, k̅, s, method)
 
 
 
 """
-    move!(rng::AbstractRNG, k̅::Int64, s::Solution)
+    move!(rng::AbstractRNG, k̅::Int, s::Solution)
 
 Returns solution `s` after moving a randomly selected node 
 to its best position if the move results in a reduction in 
 objective function value, repeating for `k̅` iterations.
 """
-function move!(rng::AbstractRNG, k̅::Int64, s::Solution)
-    N = s.N
+function move!(rng::AbstractRNG, k̅::Int, s::Solution)
     # Step 1: Initialize
+    N = s.N
     x = Inf                         # x   : insertion cost at best position
     p = (0, 0)                      # p   : best insertion postion
     # Step 2: Iterate for k̅ iterations
@@ -73,19 +73,20 @@ end
 
 
 """
-    opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
+    opt!(rng::AbstractRNG, k̅::Int, s::Solution)
 
 Returns solution `s` after iteratively taking 2 arcs from the solution 
 and reconfiguring them (total possible reconfigurations 2²-1 = 3) if the 
 reconfiguration results in a reduction in objective function value, repeating 
 for `k̅` iterations.
 """
-function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
+function opt!(rng::AbstractRNG, k̅::Int, s::Solution)
+    # Step 1: Initialize
     z = f(s)
     N = s.N
-    # Step 1: Iterate for k̅ iterations until improvement
+    # Step 2: Iterate for k̅ iterations until improvement
     for _ ∈ 1:k̅
-        # Step 1.1: Reconfigure two randomly selected arcs
+        # Step 2.1: Reconfigure two randomly selected arcs
         # n₁ → n₂ → n₃ and n₄ → n₅ → n₆ 
         n₂, n₅ = sample(rng, N), sample(rng, N)
         n₁ = N[n₂.t]
@@ -104,12 +105,12 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
             p  = N[p.h]
             if isequal(nₒ, n₅) break end
         end
-        # Step 1.2: Compute change in objective function value
+        # Step 2.2: Compute change in objective function value
         z′ = f(s)
         Δ  = z′ - z 
-        # Step 1.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
+        # Step 2.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
         if Δ < 0 z = z′
-        # Step 1.4: Reconfigure the two arcs to original state and go to step 1.1
+        # Step 2.4: Reconfigure the two arcs to original state and go to step 1.1
         else
             q  = n₆
             nₒ = n₅
@@ -124,25 +125,26 @@ function opt!(rng::AbstractRNG, k̅::Int64, s::Solution)
             end
         end
     end
-    # Step 2: Return solution
+    # Step 3: Return solution
     return s
 end
 
 
 
 """
-    swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
+    swap!(rng::AbstractRNG, k̅::Int, s::Solution)
 
 Returns solution `s` after swapping two randomly selected 
 nodes if the swap results in a reduction in objective 
 function value, repeating for `k̅` iterations.
 """
-function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
+function swap!(rng::AbstractRNG, k̅::Int, s::Solution)
+    # Step 1: Initialize
     N = s.N
     z = f(s)
-    # Step 1: Iterate for k̅ iterations
+    # Step 2: Iterate for k̅ iterations
     for _ ∈ 1:k̅
-        # Step 1.1: Swap two randomly selected nodes
+        # Step 2.1: Swap two randomly selected nodes
         # n₁ → n₂ → n₃ and n₄ → n₅ → n₆
         n₂ = sample(rng, N)
         W  = [isequal(n₂, n₅) ? 0. : relatedness(n₂, n₅, s) for n₅ ∈ N]
@@ -167,12 +169,12 @@ function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
             insertnode!(n₅, n₁, n₃, s)
             insertnode!(n₂, n₄, n₆, s)
         end
-        # Step 1.2: Compute change in objective function value
+        # Step 2.2: Compute change in objective function value
         z′ = f(s)
         Δ  = z′ - z 
-        # Step 1.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
+        # Step 2.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
         if Δ < 0 z = z′
-        # Step 1.4: Reswap the two nodes and go to step 1.1
+        # Step 2.4: Reswap the two nodes and go to step 1.1
         else
             # n₁ → n₂ (n₄) → n₃ (n₅) → n₆   ⇒   n₁ → n₃ (n₅) → n₂ (n₄) → n₆
             if isequal(n₃, n₅)
@@ -191,7 +193,7 @@ function swap!(rng::AbstractRNG, k̅::Int64, s::Solution)
             end
         end
     end
-    # Step 2: Return solution
+    # Step 3: Return solution
     return s
 end
 

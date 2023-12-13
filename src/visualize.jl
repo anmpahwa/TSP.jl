@@ -65,7 +65,7 @@ function visualize(s::Solution; backend=gr)
     # Annotation
     x = minimum(getproperty.(N, :x))
     y = maximum(getproperty.(N, :y))
-    annotate!(x, y, text("f(s): $(Int64(round(f(s))))", :left, 10))
+    annotate!(x, y, text("f(s): $(Int(round(f(s))))", :left, 10))
     return fig
 end
 
