@@ -25,7 +25,6 @@ Returns solution `s` after inserting randomly selected node at its
 best position until all open nodes have been inserted to the solution.
 """
 function best!(rng::AbstractRNG, s::Solution)
-    if all(isclose, s.N) return s end
     # Step 1: Initialize
     N = s.N
     d = sample(rng, N, Weights(isclose.(N)))
@@ -81,7 +80,6 @@ include `:pcs` (precise estimation of insertion cost) and `:ptb` (perturbed
 estimation of insertion cost).
 """
 function greedy!(rng::AbstractRNG, s::Solution; mode::Symbol)
-    if all(isclose, s.N) return s end
     # Step 1: Initialize
     N = s.N
     d = sample(rng, N, Weights(isclose.(N)))
@@ -155,7 +153,6 @@ highest regret-k cost at its best position until all open
 nodes have been added to the solution.
 """
 function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
-    if all(isclose, s.N) return s end
     # Step 1: Initialize
     N = s.N
     d = sample(rng, N, Weights(isclose.(N)))
