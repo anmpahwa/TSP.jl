@@ -26,8 +26,3 @@ export  build, initialize,
         visualize, animate, pltcnv
         
 end
-
-# -------------------------------------------------- TODO LIST (no particular order) --------------------------------------------------
-# TODO: Improve efficiency of move!(rng, k̅, s) with use of relatedness metric to avoid complete enumeration of positions within the route.
-# TODO: Improve efficiency of inertion to reduce complete re-evaluation of insertion cost in ever iteration.
-# TODO: Calibrate ALNS parameters for improved solution quality as well as run time.
