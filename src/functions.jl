@@ -1,10 +1,10 @@
 """
-    isequal(p::Node, q::Node)
+    isequal(n₁::Node, n₂::Node)
 
-Return `true` if node `p` equals node `q`.
+Return `true` if node `n₁` equals node `n₂`.
 Two nodes are equal if their indices (`i`) match.
 """
-Base.isequal(p::Node, q::Node) = isequal(p.i, q.i)
+Base.isequal(n₁::Node, n₂::Node) = isequal(n₁.i, n₂.i)
 
 
 
@@ -28,7 +28,7 @@ isclose(n::Node) = !isopen(n)
 """
     vectorize(s::Solution)
 
-Returns `Solution` as a list of nodes in the order of visit.
+Returns a list of nodes in the order of visit.
 """
 function vectorize(s::Solution)
     N = s.N
@@ -75,15 +75,15 @@ isfeasible(s::Solution) = all(isclose, s.N)
 
 
 """
-    relatedness(n¹::Node, n²::Node, s::Solution)
+    relatedness(n₁::Node, n₂::Node, s::Solution)
 
-Returns a measure of similarity between nodes `n¹` and `n²` in solution `s`.
+Returns a measure of similarity between nodes `n₁` and `n₂` in solution `s`.
 """
-function relatedness(n¹::Node, n²::Node, s::Solution)
+function relatedness(n₁::Node, n₂::Node, s::Solution)
     ϵ  = 1e-5
     φ  = 1
     q  = 0
-    l  = s.A[(n¹.i,n².i)].c
+    l  = s.A[(n₁.i,n₂.i)].c
     t  = 0
     z  = φ/(q + l + t + ϵ)
     return z
