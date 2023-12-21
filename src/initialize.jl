@@ -3,7 +3,8 @@
     
 Returns a tuple of nodes and arcs for the `instance`. 
 
-Note, `dir` locates the the folder containing instance files as sub-folders.
+Note, `dir` locates the the folder containing instance files as sub-folders,
+as follows,
 
     <dir>
     |-<instance>
@@ -33,7 +34,8 @@ end
 Returns initial `Solution` created by merging routes that render the most 
 savings until no merger can render further savings. 
 
-Note, `dir` locates the the folder containing instance files as sub-folders.
+Note, `dir` locates the the folder containing instance files as sub-folders,
+as follows,
 
     <dir>
     |-<instance>
@@ -133,10 +135,11 @@ end
 """
     initialize(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
 
-Returns initial LRP `Solution` developed using Clark and Wright Savings Algorithm 
-for the `instance`. 
+Returns initial LRP `Solution` developed using Clark and Wright Savings 
+Algorithm for the `instance`. 
 
-Note, `dir` locates the the folder containing instance files as sub-folders.
+Note, `dir` locates the the folder containing instance files as sub-folders, 
+as follows,
     
     <dir>
     |-<instance>
