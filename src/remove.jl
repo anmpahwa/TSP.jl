@@ -53,9 +53,9 @@ function relatednode!(rng::AbstractRNG, q::Int, s::Solution)
     X = fill(-Inf, I)           # X[i]: relatedness of node N[i] with node N[j]
     W = ones(Int, I)            # W[i]: selection weight of node N[i]
     # Step 2: Randomly select a pivot customer node
-    nₒ= sample(rng, N, Weights(W))
+    j = sample(rng, eachindex(N), Weights(W))
     # Step 3: For each customer node, evaluate relatedness to this pivot customer node
-    for (i,n) ∈ pairs(N) X[i] = relatedness(nₒ, n, s) end
+    for i ∈ eachindex(N) X[i] = isone(W[i]) ? relatedness(N[i], N[j], s) : -Inf end
     # Step 4: Remove q most related customer nodes
     for _ ∈ 1:q
         i  = argmax(X)
