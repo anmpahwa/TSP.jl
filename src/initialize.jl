@@ -135,7 +135,7 @@ end
 """
     initialize(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
 
-Returns initial LRP `Solution` developed using Clark and Wright Savings 
+Returns initial TSP `Solution` developed using Clark and Wright Savings 
 Algorithm for the `instance`. 
 
 Note, `dir` locates the the folder containing instance files as sub-folders, 
