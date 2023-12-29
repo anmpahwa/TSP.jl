@@ -1,7 +1,7 @@
 """
     remove!([rng::AbstractRNG], q::Int, s::Solution, method::Symbol)
 
-    Returns solution `s` after removing `q` nodes using the given `method`.
+Returns solution `s` after removing `q` nodes using the given `method`.
 
 Available methods include,
 - Random Node Removal    : `:randomnode!`
