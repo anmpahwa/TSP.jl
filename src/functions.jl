@@ -43,7 +43,8 @@ function vectorize(s::Solution)
     N = s.N
     V = Int[]
     if all(isopen, N) return V end
-    nₒ = N[1]
+    i  = findfirst(isclose.(N))
+    nₒ = N[i]
     nₜ = nₒ
     nₕ = N[nₜ.h]
     push!(V, nₒ.i)
