@@ -27,7 +27,7 @@ best position until all open nodes have been inserted to the solution.
 function best!(rng::AbstractRNG, s::Solution)
     # Step 1: Initialize
     N = s.N
-    d = sample(rng, N, Weights(isclose.(N)))
+    d = N[1]
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
     W = ones(Int, I)            # W[i]: selection weight for node L[i]
@@ -82,7 +82,7 @@ estimation of insertion cost).
 function greedy!(rng::AbstractRNG, s::Solution; mode::Symbol)
     # Step 1: Initialize
     N = s.N
-    d = sample(rng, N, Weights(isclose.(N)))
+    d = N[1]
     φ = isequal(mode, :ptb)
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
@@ -151,11 +151,13 @@ perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:ptb)
 Returns solution `s` after iteratively adding nodes with 
 highest regret-k cost at its best position until all open 
 nodes have been added to the solution.
+Note, regretk mechanism breaks any ties by inserting the 
+node with the lowest insertion cost.
 """
 function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
     # Step 1: Initialize
     N = s.N
-    d = sample(rng, N, Weights(isclose.(N)))
+    d = N[1]
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
     X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
@@ -220,6 +222,8 @@ end
 Returns solution `s` after iteratively adding nodes with 
 highest regret-2 cost at its best position until all open 
 nodes have been added to the solution.
+Note, regret2 mechanism breaks any ties by inserting the 
+node with the lowest insertion cost.
 """
 regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, 2)
 """
@@ -228,5 +232,7 @@ regret2!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, 2)
 Returns solution `s` after iteratively adding nodes with 
 highest regret-3 cost at its best position until all open 
 nodes have been added to the solution.
+Note, regret3 mechanism breaks any ties by inserting the 
+node with the lowest insertion cost.
 """
 regret3!(rng::AbstractRNG, s::Solution) = regretk!(rng, s, 3)
