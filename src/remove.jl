@@ -24,8 +24,9 @@ Returns solution `s` after removing `q` nodes randomly.
 function randomnode!(rng::AbstractRNG, q::Int, s::Solution)
     # Step 1: Initialize
     N = s.N
+    d = N[1]
     I = eachindex(N)
-    W = ones(Int, I)            # W[i]: selection weight of node N[i]
+    W = [isequal(d, n) ? 0 : 1 for n ∈ N]   # W[i]: selection weight of node N[i]
     # Step 2: Randomly select customer nodes to remove until q nodes have been removed
     for _ ∈ 1:q
         i  = sample(rng, I, Weights(W))
@@ -49,9 +50,10 @@ Returns solution `s` after removing `q` nodes most related to a randomly selecte
 function relatednode!(rng::AbstractRNG, q::Int, s::Solution)
     # Step 1: Initialize
     N = s.N
+    d = N[1]
     I = eachindex(N)
-    X = fill(-Inf, I)           # X[i]: relatedness of node N[i] with node N[j]
-    W = ones(Int, I)            # W[i]: selection weight of node N[i]
+    X = fill(-Inf, I)                       # X[i]: relatedness of node N[i] with node N[j]
+    W = [isequal(d, n) ? 0 : 1 for n ∈ N]   # W[i]: selection weight of node N[i]
     # Step 2: Randomly select a pivot customer node
     j = sample(rng, eachindex(N), Weights(W))
     # Step 3: For each customer node, evaluate relatedness to this pivot customer node
@@ -80,14 +82,16 @@ Returns solution `s` after removing `q` nodes with highest removal cost (savings
 function worstnode!(rng::AbstractRNG, q::Int, s::Solution)
     # Step 1: Initialize
     N = s.N
+    d = N[1]
     I = eachindex(N)
-    X = fill(-Inf, I)           # X[i]: removal cost of node N[i]
+    X = fill(-Inf, I)                       # X[i]: removal cost of node N[i]
     # Step 2: Iterate until q nodes have been removed
     for _ ∈ 1:q
         # Step 2.1: For every closed node evaluate removal cost
         z = f(s)
         for (i,nₒ) ∈ pairs(N)
             if isopen(nₒ) continue end
+            if isequal(nₒ, d) continue end
             # Step 2.1.1: Remove closed node nₒ between tail node nₜ and head node nₕ
             nₜ = N[nₒ.t]
             nₕ = N[nₒ.h]
