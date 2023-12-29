@@ -26,6 +26,15 @@ isclose(n::Node) = !isopen(n)
 
 
 """
+    relatedness(n₁::Node, n₂::Node, s::Solution)
+
+Returns a measure of similarity between nodes `n₁` and `n₂` in solution `s`.
+"""
+relatedness(n₁::Node, n₂::Node, s::Solution) = 1 / (s.A[(n₁.i,n₂.i)].c + 1e-5)
+
+
+
+"""
     vectorize(s::Solution)
 
 Returns a list of nodes in the order of visit.
@@ -34,8 +43,7 @@ function vectorize(s::Solution)
     N = s.N
     V = Int[]
     if all(isopen, N) return V end
-    i  = findfirst(isclose.(N))
-    nₒ = N[i]
+    nₒ = N[1]
     nₜ = nₒ
     nₕ = N[nₜ.h]
     push!(V, nₒ.i)
@@ -57,15 +65,6 @@ Base.hash(s::Solution) = hash(vectorize(s))
 
 
 """
-    f(s::Solution)
-
-Returns objective function value.
-"""
-f(s::Solution) = s.c
-
-
-
-"""
     isfeasible(s::Solution)
 
 Returns `true` if all nodes are served on the route.
@@ -75,16 +74,8 @@ isfeasible(s::Solution) = all(isclose, s.N)
 
 
 """
-    relatedness(n₁::Node, n₂::Node, s::Solution)
+    f(s::Solution)
 
-Returns a measure of similarity between nodes `n₁` and `n₂` in solution `s`.
+Returns objective function value.
 """
-function relatedness(n₁::Node, n₂::Node, s::Solution)
-    ϵ  = 1e-5
-    φ  = 1
-    q  = 0
-    l  = s.A[(n₁.i,n₂.i)].c
-    t  = 0
-    z  = φ/(q + l + t + ϵ)
-    return z
-end
+f(s::Solution) = s.c
