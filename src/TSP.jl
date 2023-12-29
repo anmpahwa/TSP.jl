@@ -20,9 +20,9 @@ include("parameters.jl")
 include("ALNS.jl")
 include("visualize.jl")
 
-export  build, initialize, 
+export  build, savings, initialize, 
         vectorize, f, isfeasible, 
         ALNSparameters, ALNS, 
-        visualize, animate, pltcnv
+        visualize, animate
         
 end
