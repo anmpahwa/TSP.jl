@@ -174,7 +174,7 @@ function swap!(rng::AbstractRNG, k̅::Int, s::Solution)
         Δ  = z′ - z 
         # Step 2.3: If the swap results in reduction in objective function value then go to step 1, else go to step 1.4
         if Δ < 0 z = z′
-        # Step 2.4: Reswap the two nodes and go to step 1.1
+        # Step 2.4: Reswap the two nodes and go to step 2.1
         else
             # n₁ → n₂ (n₄) → n₃ (n₅) → n₆   ⇒   n₁ → n₃ (n₅) → n₂ (n₄) → n₆
             if isequal(n₃, n₅)
