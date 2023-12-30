@@ -35,11 +35,11 @@ function visualize(s::Solution; backend=gr)
     fig = plot(legend=:none)
     # Closed nodes
     V = vectorize(s)
-    K = length(V)
+    K = eachindex(V)
     W = fill("color",  K)
     X = zeros(Float64, K)
     Y = zeros(Float64, K)
-    for k ∈ 1:K
+    for k ∈ K
         i = V[k]
         n = N[i]
         W[k] = "DarkBlue"
@@ -50,11 +50,11 @@ function visualize(s::Solution; backend=gr)
     plot!(X, Y, color="SteelBlue")
     # Open nodes
     V = [n.i for n ∈ N if isopen(n)]
-    K = length(V)
+    K = eachindex(V)
     W = fill("color",  K)
     X = zeros(Float64, K)
     Y = zeros(Float64, K)
-    for k ∈ 1:K
+    for k ∈ K
         i = V[k]
         n = N[i]
         W[k] = "LightBlue"
@@ -107,9 +107,9 @@ Uses given `backend` to plot (defaults to `gr`).
 """
 function pltcnv(Z::OffsetVector{Float64}; backend=gr)
     backend()
-    fig = plot(legend=:none)
-    z⃰ = Z[0]
+    fig= plot(legend=:none)
     Y₁ = Int[]
+    z⃰  = Z[0]
     for (k, z) ∈ pairs(Z)
         if z < 0.99z⃰ 
             z⃰ = z
