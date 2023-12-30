@@ -131,7 +131,8 @@ end
 
 Returns solution `s` after iteratively inserting nodes with 
 least insertion cost until all open nodes have been added 
-to the solution. Estimates insertion cost precisely.
+to the solution. 
+Estimates insertion cost precisely.
 """
 precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:pcs)
 """
@@ -139,7 +140,8 @@ precise!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:pcs)
 
 Returns solution `s` after iteratively inserting nodes with 
 least insertion cost until all open nodes have been added to 
-the solution. Estimates insertion cost with a perturbration.
+the solution. 
+Estimates insertion cost with a perturbration.
 """
 perturb!(rng::AbstractRNG, s::Solution) = greedy!(rng, s; mode=:ptb)
 
