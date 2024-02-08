@@ -37,7 +37,9 @@ function move!(rng::AbstractRNG, k̅::Int, s::Solution)
         # Step 2.2: Remove this node from its position between tail node nₜ and head node nₕ
         nₜ = N[nₒ.t]
         nₕ = N[nₒ.h]
-        pₒ = (nₜ.i, nₕ.i)
+        nₑ = nₜ
+        x  = Inf
+        p  = (0, 0)
         removenode!(nₒ, nₜ, nₕ, s)
         nₜ = nₕ
         nₕ = N[nₜ.h]
@@ -52,7 +54,7 @@ function move!(rng::AbstractRNG, k̅::Int, s::Solution)
             if Δ < x x, p = Δ, (nₜ.i, nₕ.i) end
             # Step 2.3.4: Remove node from its position between tail node nₜ and head node nₕ
             removenode!(nₒ, nₜ, nₕ, s)
-            if isequal((nₜ.i, nₕ.i), pₒ) break end
+            if isequal(nₜ, nₑ) break end
             nₜ = nₕ
             nₕ = N[nₜ.h]
         end
@@ -62,9 +64,6 @@ function move!(rng::AbstractRNG, k̅::Int, s::Solution)
         nₜ = N[t]
         nₕ = N[h]
         insertnode!(nₒ, nₜ, nₕ, s)
-        # Step 2.5: Revise vectors appropriately
-        x = Inf
-        p = (0, 0)
     end
     # Step 3: Return solution
     return s
