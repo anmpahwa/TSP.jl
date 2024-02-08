@@ -163,9 +163,9 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
     L = [n for n ∈ N if isopen(n)]
     I = eachindex(L)
     X = fill(Inf, I)            # X[i]  : insertion cost of node L[i] at best position
-    P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
     Y = fill(Inf, (k̅,I))        # Y[k,i]: insertion cost of node L[i] at kᵗʰ best position
-    R = fill(-Inf, I)           # R[i]  : regret-K cost of node L[i]
+    Z = fill(-Inf, I)           # Z[i]  : regret-K cost of node L[i]
+    P = fill((0, 0), I)         # P[i]  : best insertion postion of node L[i]
     # Step 2: Iterate until all open nodes have been inserted into the route
     for _ ∈ I
         # Step 2.1: Iterate through all open nodes
@@ -185,10 +185,7 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
                 if Δ < X[i] X[i], P[i] = Δ, (nₜ.i, nₕ.i) end
                 # Step 2.1.1.4: Revise K least insertion costs
                 k̲ = 1
-                for k ∈ 1:k̅
-                    k̲ = k
-                    if Δ < Y[k,i] break end
-                end
+                for k ∈ 1:k̅ Δ < Y[k,i] ? break : k̲ += 1 end
                 for k ∈ k̅:-1:k̲ Y[k,i] = isequal(k, k̲) ? Δ : Y[k-1,i] end
                 # Step 2.1.1.5: Remove node from its position between tail node nₜ and head node nₕ
                 removenode!(nₒ, nₜ, nₕ, s)
@@ -197,11 +194,11 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
                 nₕ = N[nₜ.h]
             end
             # Step 2.1.2: Compute regret cost for node L[i]
-            R[i] = 0.
-            for k ∈ 1:k̅ R[i] += Y[k,i] - Y[1,i] end
+            Z[i] = 0.
+            for k ∈ 1:k̅ Z[i] += Y[k,i] - Y[1,i] end
         end
         # Step 2.2: Insert node with highest regret cost at its best position (break ties by inserting the node with the lowest insertion cost)
-        I̲  = findall(isequal.(R, maximum(R)))
+        I̲  = findall(isequal.(Z, maximum(Z)))
         i  = I̲[argmin(X[I̲])]
         nₒ = L[i]
         t  = P[i][1]
@@ -211,9 +208,9 @@ function regretk!(rng::AbstractRNG, s::Solution, k̅::Int)
         insertnode!(nₒ, nₜ, nₕ, s)
         # Step 2.3: Revise vectors appropriately
         X .= Inf
+        Y .= Inf
+        Z .= -Inf
         P .= ((0, 0), )
-        Y[:,:] .= Inf
-        R .= -Inf
     end
     # Step 3: Return initial solution
     return s
