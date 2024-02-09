@@ -8,7 +8,7 @@ let
     # Define instances
     instances = ["att48", "eil101", "ch150", "d198", "a280"];
     # Define random number generators
-    seeds = [1010, 1104, 1509, 1604, 1905, 2104, 2412, 2703, 2710, 2807]
+    seeds = [1010, 1106, 1509, 1604, 1905, 2104, 2412, 2703, 2710, 2807]
     # Dataframes to store solution quality and run time
     df₁ = DataFrame([instances, [zeros(length(instances)) for _ ∈ seeds]...], [iszero(i) ? "instance" : "$(seeds[i])" for i ∈ 0:length(seeds)])
     df₂ = DataFrame([instances, [zeros(length(instances)) for _ ∈ seeds]...], [iszero(i) ? "instance" : "$(seeds[i])" for i ∈ 0:length(seeds)])
