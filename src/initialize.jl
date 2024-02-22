@@ -8,8 +8,8 @@ as follows,
 
     <dir>
     |-<instance>
-        |-nodes.csv
         |-arcs.csv
+        |-nodes.csv
 """
 function build(instance::String; dir=joinpath(dirname(@__DIR__), "instances"))
     # Nodes
@@ -143,7 +143,7 @@ as follows,
     
     <dir>
     |-<instance>
-        |-nodes.csv
         |-arcs.csv
+        |-nodes.csv
 """
 initialize(instance::String; dir=joinpath(dirname(@__DIR__), "instances")) = savings(instance; dir=dir)
