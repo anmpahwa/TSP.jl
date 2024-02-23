@@ -30,7 +30,7 @@ end
 
 
 """
-    Solution(N::Vector{Node}, A::Dict{Tuple{Int,Int}, Arc}, c=0.)
+    Solution(N::Vector{Node}, A::Dict{Tuple{Int,Int}, Arc}, c::Float64)
 
 A `Solution` is a graph with nodes `N`, arcs `A`, and route 
 cost `c`.
@@ -39,5 +39,4 @@ mutable struct Solution
     N::Vector{Node}                                             # Vector of nodes
     A::Dict{Tuple{Int,Int}, Arc}                                # Set of arcs
     c::Float64                                                  # Route cost
-    Solution(N, A) = new(N, A, 0.)
 end

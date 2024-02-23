@@ -35,6 +35,23 @@ relatedness(n₁::Node, n₂::Node, s::Solution) = 1 / (s.A[(n₁.i,n₂.i)].c +
 
 
 """
+    Solution(N::Vector{Node}, A::Dict{Tuple{Int,Int}, Arc})
+
+Returns `Solution` on graph `G = (N, A)`.
+"""
+function Solution(N::Vector{Node}, A::Dict{Tuple{Int,Int}, Arc})
+    c = 0.
+    for n ∈ N
+        if isopen(n) continue end
+        a  = A[(n.i, n.h)]
+        c += a.c
+    end
+    return Solution(N, A, c)
+end
+
+
+
+"""
     vectorize(s::Solution)
 
 Returns a list of nodes in the order of visit.
